@@ -1,0 +1,191 @@
+<div class="page-layout carded fullwidth p-24 mb-50" [ngClass.lt-sm]="['w-100-p']" skramblerPerfectScrollbar>
+    <mat-card>
+      <form name="formGroup" [formGroup]="formGroup" novalidate>
+        <mat-card-header>
+          <button class="mat-headline back-button mt-4" (click)="goTo(routeList.BRAND_LISTING);">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+          <div fxLayout="row" fxFill fxFlex="100%" class="pl-24 pr-24">
+            <h2 class="mat-headline" fxFlex="50" fxLayoutAlign="stretch" [innerHtml]="pageTitle"></h2>
+            <div fxFlex="50" fxLayoutAlign="end" fxLayout="row" class="h-44">
+              <span class="mr-8 mat-subheading-2" *ngIf="baseModel.active">
+                <strong>{{'TEXT.ACTIVE' | translate}}</strong>
+              </span>
+              <span class="mr-8 mat-subheading-2" *ngIf="!baseModel.active">
+                <strong>{{'TEXT.INACTIVE' | translate}}</strong>
+              </span>
+              <mat-slide-toggle disabled [checked]="baseModel.active === 1" color="primary" aria-label="{{'INPUT.STATUS.PLACEHOLDER' | translate}}"
+              (change)="changeStatus($event)"></mat-slide-toggle>
+            </div>
+          </div>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content class="pt-20">
+          <div class="w-100-p">
+  
+            <div fxLayout="column" fxLayoutAlign="space-around stretch" fxLayoutGap="5px">
+              <!-- CATEGORIES -->
+              <mat-form-field class="asterisk mat-form-field readonly-wrapper" [appearance]="this.constantList.FORM_FIELD_APPREANCE">
+                <input readonly type="text" placeholder="{{'TEXT.SELECT_CATEGORY' | translate}}" matInput formControlName="category_id">
+                <mat-icon matSuffix *ngIf="formGroup.controls.category_id.valid">
+                  <i class="material-icons">check</i>
+                </mat-icon>
+                <mat-error *ngIf="formGroup.controls.category_id.invalid">
+                  {{getErrorMessage('category_id')}}
+                </mat-error>
+              </mat-form-field>
+  
+              <!-- SUB-CATEGORIES -->
+              <mat-form-field fxLayoutGap="10px">
+                <div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="10px">
+                  <div>
+                    <input type="text" readonly placeholder="{{'TEXT.SELECT_SUB_CATEGORY' | translate}}" matInput formControlName="sub_categories">
+                  </div>
+                  <mat-chip-list>
+                    <mat-chip *ngFor="let subCategory of subCategoriesChipList" selected color="primary">
+                      <mat-icon class="cross-mat-icon white-font-color">cancel</mat-icon>{{subCategory.name}}
+                    </mat-chip>
+                  </mat-chip-list>
+                </div>
+              </mat-form-field>
+  
+              <!-- TAGS -->
+              <mat-form-field fxLayoutGap="10px">
+                <div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="10px">
+                  <div>
+                    <input readonly type="text" placeholder="{{'TEXT.SELECT_TAGS' | translate}}" matInput formControlName="tags">
+                  </div>
+                  <mat-chip-list>
+                    <mat-chip *ngFor="let tag of tagsChipList" selected color="primary">
+                      <mat-icon class="cross-mat-icon white-font-color">cancel</mat-icon>{{tag.name}}
+                    </mat-chip>
+                  </mat-chip-list>
+                </div>
+              </mat-form-field>
+  
+              <!-- NAME -->
+              <mat-form-field class="asterisk mat-form-field" [appearance]="this.constantList.FORM_FIELD_APPREANCE">
+                <mat-label>{{'INPUT.NAME.LABEL' | translate}}</mat-label>
+                <input matInput readonly type="text" maxlength="40" placeholder="{{'INPUT.NAME.PLACEHOLDER' | translate}}"
+                  formControlName="name" required />
+                <mat-icon matSuffix *ngIf="formGroup.controls.name.valid">
+                  <i class="material-icons">check</i>
+                </mat-icon>
+                <mat-error *ngIf="formGroup.controls.name.invalid">
+                  {{getErrorMessage('name')}}
+                </mat-error>
+              </mat-form-field>
+  
+              <!-- DESCRIPTION -->
+              <mat-form-field class="asterisk mat-form-field" fxFlex="50%" class="asterisk">
+                <textarea  matInput readonly placeholder="{{'INPUT.BRAND_DESCRIPTION.PLACEHOLDER' | translate}}" formControlName="description"
+                  matTextareaAutosize matAutosizeMinRows="{{this.constantList.MAX_AUTO_SIZE_MIN_ROWS}}"
+                  matAutosizeMaxRows="{{this.constantList.MAX_AUTO_SIZE_MAX_ROWS}}" required>
+                    </textarea>
+                <mat-error *ngIf="this.formGroup.controls.description.invalid">
+                  {{getErrorMessage('description')}}
+                </mat-error>
+              </mat-form-field>
+  
+            </div>
+            <!-- Delivery types description -->
+            <div fxLayout="column" fxLayoutAlign="space-around stretch" fxLayoutGap="5px">
+            <mat-form-field *ngFor="let type of this.baseModel.brand_delivery_types" class="asterisk" class="asterisk">
+            <textarea matInput readonly placeholder="{{type.placeholder ? type.placeholder : type.type.name +  ' Description'}}" formControlName="description_{{type.delivery_type_id}}" [maxlength]="200"
+                      matTextareaAutosize matAutosizeMinRows="{{this.constantList.MAX_AUTO_SIZE_MIN_ROWS}}" matAutosizeMaxRows="{{this.constantList.MAX_AUTO_SIZE_MAX_ROWS}}">
+                                </textarea>
+              <mat-error *ngIf="checkInValidControl('description', type.delivery_type_id)">
+                {{getErrorMessage('description', type.delivery_type_id)}}
+              </mat-error>
+            </mat-form-field>
+            </div>
+            <!--end-->
+            <div fxLayout="column" fxLayoutAlign="space-around stretch" fxLayoutGap="5px">
+              <mat-form-field class="asterisk">
+                <input matInput readonly placeholder="{{'INPUT.WEBSITE.PLACEHOLDER' | translate}}" formControlName="website"
+                  [required]="formGroup.get('website').errors !== null">
+                <mat-error *ngIf="this.formGroup.controls.website.invalid">
+                  {{getErrorMessage('website')}}
+                </mat-error>
+                <mat-icon matSuffix matTooltip="{{'INPUT.URL.ERROR' | translate}}" matTooltipPosition="above">
+                  info
+                </mat-icon>
+              </mat-form-field>
+              <mat-form-field class="asterisk" hintLabel="{{'INPUT.FACEBOOK_PAGE.HINT' | translate}}">
+                <input matInput readonly placeholder="{{'INPUT.FACEBOOK_PAGE.PLACEHOLDER' | translate}}" formControlName="facebook_page">
+                <mat-error *ngIf="this.formGroup.controls.facebook_page.invalid">
+                  {{getErrorMessage('facebook_page')}}
+                </mat-error>
+                <mat-icon matSuffix matTooltip="{{'INPUT.URL.ERROR' | translate}}" matTooltipPosition="above">
+                  info
+                </mat-icon>
+              </mat-form-field>
+              <mat-form-field class="asterisk" hintLabel="{{'INPUT.INSTA_PAGE.HINT' | translate}}">
+                <input matInput readonly placeholder="{{'INPUT.INSTA_PAGE.PLACEHOLDER' | translate}}" formControlName="insta_page">
+                <mat-error *ngIf="this.formGroup.controls.insta_page.invalid">
+                  {{getErrorMessage('insta_page')}}
+                </mat-error>
+                <mat-icon matSuffix matTooltip="{{'INPUT.URL.ERROR' | translate}}" matTooltipPosition="above">
+                  info
+                </mat-icon>
+              </mat-form-field>
+              <mat-form-field class="asterisk" hintLabel="{{'INPUT.TWITTER_PAGE.HINT' | translate}}">
+                <input matInput readonly placeholder="{{'INPUT.TWITTER_PAGE.PLACEHOLDER' | translate}}" formControlName="twitter_page">
+                <mat-error *ngIf="this.formGroup.controls.twitter_page.invalid">
+                  {{getErrorMessage('twitter_page')}}
+                </mat-error>
+                <mat-icon matSuffix matTooltip="{{'INPUT.URL.ERROR' | translate}}" matTooltipPosition="above">
+                  info
+                </mat-icon>
+              </mat-form-field>
+            </div>
+  
+            <div fxLayout="column" fxLayoutAlign="center stretch" fxLayoutGap="20px">
+              <div  fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="40px">
+              <!-- MAIN IMAGE-->
+              <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px">
+                  <strong>{{'TEXT.BRAND_MAIN_IMAGE_LABEL' | translate}}</strong>
+                  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                    <div>
+                      <img class="square-image" [src]="this.baseModel.mainImageDataURI" *ngIf="this.baseModel.mainImageDataURI" />
+                      <img class="square-image" src="{{this.baseModel.mainImagePath}}" *ngIf="this.baseModel.mainImagePath" />
+                    </div>
+                  </div>
+                </div>
+                <!-- LOGO IMAGE-->
+                <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px">
+                  <strong>{{'TEXT.BRAND_LOGO_IMAGE_LABEL' | translate}}</strong>
+                  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                    <div>
+                      <img class="square-image" [src]="this.baseModel.logoImageDataURI" *ngIf="this.baseModel.logoImageDataURI" />
+                      <img class="square-image" src="{{this.baseModel.logoImagePath}}" *ngIf="this.baseModel.logoImagePath" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- SECONDARY IMAGES-->
+              <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px">
+                <strong>{{'TEXT.BRAND_SECONDARY_IMAGE_LABEL' | translate}}</strong>
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                  <div class="images-row">
+                    <div class="images-view-column" *ngFor="let uploadFilesImage of photosAlbumData;let i = index">
+                      <img fxFlex="100%" [src]="uploadFilesImage.image" class="image-shadow">
+                      <mat-icon>cancel</mat-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+           
+          </div>
+        </mat-card-content>
+        <mat-divider></mat-divider>
+        <mat-card-actions>
+        </mat-card-actions>
+      </form>
+      <div fxLayoutGap="10px">
+        <skrambler-branch-list></skrambler-branch-list>
+        <skrambler-offer-list></skrambler-offer-list>
+      </div>
+    </mat-card>
+  </div>

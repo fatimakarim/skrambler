@@ -1,0 +1,17 @@
+/* Structure */
+
+@import "../../../../theme-core/scss/skrambler.scss";
+
+:host {
+  ::ng-deep mat-row {
+    max-height: 70px !important;
+  }
+
+  ::ng-deep{
+    .ellipse-description{
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    } 
+  }
+}

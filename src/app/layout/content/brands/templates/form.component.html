@@ -1,0 +1,255 @@
+<div class="page-layout carded fullwidth p-24 mb-50" [ngClass.lt-sm]="['w-100-p']" skramblerPerfectScrollbar>
+  <mat-card>
+    <form name="formGroup" [formGroup]="formGroup" novalidate>
+      <mat-card-header>
+        <button class="mat-headline back-button mt-4" (click)="goTo(routeList.BRAND_LISTING);">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div fxLayout="row" fxFill fxFlex="100%" class="pl-24 pr-24">
+          <h2 class="mat-headline" fxFlex="50" fxLayoutAlign="stretch" [innerHtml]="pageTitle"></h2>
+          <div fxFlex="50" fxLayoutAlign="end" fxLayout="row" class="h-44">
+            <span class="mr-8 mat-subheading-2" *ngIf="baseModel.active === 1">
+              <strong>{{'TEXT.ACTIVE' | translate}}</strong>
+            </span>
+            <span class="mr-8 mat-subheading-2" *ngIf="baseModel.active === 0">
+              <strong>{{'TEXT.INACTIVE' | translate}}</strong>
+            </span>
+            <mat-slide-toggle [checked]="baseModel.active === 1" color="primary" aria-label="{{'INPUT.STATUS.PLACEHOLDER' | translate}}"
+              (change)="changeStatus($event)"></mat-slide-toggle>
+          </div>
+        </div>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content class="pt-20">
+        <mat-vertical-stepper class="w-100-p">
+          <mat-step label="{{'TEXT.BRAND_DETAILS_LABEL' | translate}}" fxLayout="column" fxLayoutAlign="space-around center">
+            <div fxLayout="column" fxLayoutAlign="space-around stretch" fxLayoutGap="5px">
+              <!-- CATEGORIES -->
+              <mat-form-field class="asterisk mat-form-field" [appearance]="this.constantList.FORM_FIELD_APPREANCE">
+                <mat-select required placeholder="{{'TEXT.SELECT_CATEGORY' | translate}}" (selectionChange)="onCategoryChange($event)"
+                  formControlName="category_id">
+                  <mat-option *ngFor="let category of parentCategories" [value]="category.id">
+                    {{category.name}}
+                  </mat-option>
+                </mat-select>
+                <mat-icon matSuffix *ngIf="formGroup.controls.category_id.valid">
+                  <i class="material-icons">check</i>
+                </mat-icon>
+                <mat-error *ngIf="formGroup.controls.category_id.invalid">
+                  {{getErrorMessage('category_id')}}
+                </mat-error>
+              </mat-form-field>
+
+              <!-- SUB-CATEGORIES -->
+              <mat-form-field fxLayoutGap="10px">
+                <div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="10px">
+                  <div>
+                    <input type="text" placeholder="{{'TEXT.SELECT_SUB_CATEGORY' | translate}}" matInput
+                      formControlName="sub_categories" [matAutocomplete]="auto_sub_categories" [required]="this.subCategoriesChipList.length==0">
+                    <mat-autocomplete #auto_sub_categories="matAutocomplete" (optionSelected)="onSubCategorySelected($event)">
+                      <mat-option *ngFor="let category of filteredSubCategories | async" [value]="category.name">
+                        {{category.name}}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </div>
+                  <mat-chip-list>
+                    <mat-chip *ngFor="let subCategory of subCategoriesChipList" selected color="primary">
+                      <mat-icon class="cross-mat-icon white-font-color" (click)="removeSubCategoryChip(subCategory)">cancel</mat-icon>{{subCategory.name}}
+                    </mat-chip>
+                  </mat-chip-list>
+                </div>
+              </mat-form-field>
+
+              <!-- TAGS -->
+              <mat-form-field fxLayoutGap="10px">
+                <div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="10px">
+                  <div>
+                    <input type="text" placeholder="{{'TEXT.SELECT_TAGS' | translate}}" matInput formControlName="tags"
+                      [matAutocomplete]="auto_tags">
+                    <mat-autocomplete #auto_tags="matAutocomplete" (optionSelected)="onTagSelected($event)">
+                      <mat-option *ngFor="let tag of filteredTags | async" [value]="tag.name">
+                        {{tag.name}}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </div>
+                  <mat-chip-list>
+                    <mat-chip *ngFor="let tag of tagsChipList" selected color="primary">
+                      <mat-icon class="cross-mat-icon white-font-color" (click)="removeTagChip(tag)">cancel</mat-icon>{{tag.name}}
+                    </mat-chip>
+                  </mat-chip-list>
+                </div>
+              </mat-form-field>
+
+              <!-- NAME -->
+              <mat-form-field class="asterisk mat-form-field" [appearance]="this.constantList.FORM_FIELD_APPREANCE">
+                <mat-label>{{'INPUT.NAME.LABEL' | translate}}</mat-label>
+                <input matInput type="text" maxlength="40" placeholder="{{'INPUT.NAME.PLACEHOLDER' | translate}}"
+                  formControlName="name" required />
+                <mat-icon matSuffix *ngIf="formGroup.controls.name.valid">
+                  <i class="material-icons">check</i>
+                </mat-icon>
+                <mat-error *ngIf="formGroup.controls.name.invalid">
+                  {{getErrorMessage('name')}}
+                </mat-error>
+              </mat-form-field>
+
+              <!-- DESCRIPTION -->
+              <mat-form-field class="asterisk mat-form-field" fxFlex="50%" class="asterisk">
+                <textarea matInput placeholder="{{'INPUT.BRAND_DESCRIPTION.PLACEHOLDER' | translate}}" formControlName="description"
+                  matTextareaAutosize matAutosizeMinRows="{{this.constantList.MAX_AUTO_SIZE_MIN_ROWS}}"
+                  matAutosizeMaxRows="{{this.constantList.MAX_AUTO_SIZE_MAX_ROWS}}" required>
+                  </textarea>
+                <mat-error *ngIf="this.formGroup.controls.description.invalid">
+                  {{getErrorMessage('description')}}
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Delivery type select box-->
+              <div fxLayout="row" fxLayoutAlign="space-between center">
+
+              <mat-form-field  *ngIf="this.baseModel.category_id === this.constantList.BRAND_FOOD_DRINKS_ID" fxFlex="45%" fxFlexFill class="asterisk mat-form-field">
+                <mat-select placeholder="{{'INPUT.DELIVERY_TYPE.PLACEHOLDER' | translate}}"  (selectionChange)="onTypeChange($event)" formControlName="delivery_type"
+                            multiple>
+                  <mat-option (onSelectionChange)="optionChanges($event,'description')" *ngFor="let delivery of this.constantList.DELIVERY_TYPES" [value]="delivery">
+                    {{delivery.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="formGroup.controls.delivery_type.invalid">
+                  {{getErrorMessage('delivery_type')}}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+              <!-- Delivery types description -->
+              <mat-form-field *ngFor="let type of this.baseModel.brand_delivery_types" fxFlex="100%" class="asterisk mat-form-field" fxFlex="50%" class="asterisk">
+            <textarea matInput placeholder="{{type.placeholder ? type.placeholder : type.type.name +  ' Description'}}" formControlName="description_{{type.delivery_type_id}}" [maxlength]="200"
+                      matTextareaAutosize matAutosizeMinRows="{{this.constantList.MAX_AUTO_SIZE_MIN_ROWS}}" matAutosizeMaxRows="{{this.constantList.MAX_AUTO_SIZE_MAX_ROWS}}">
+                                </textarea>
+                <mat-error *ngIf="checkInValidControl('description', type.delivery_type_id)">
+                  {{getErrorMessage('description', type.delivery_type_id)}}
+                </mat-error>
+              </mat-form-field>
+
+              <!--end-->
+              <div fxLayout="column" fxLayoutAlign="start start">
+                <button type="button" mat-raised-button matStepperNext color="primary">
+                  {{'TEXT.CONTINUE' | translate}}  &nbsp;
+                </button>
+              </div>
+            </div>
+          </mat-step>
+          <mat-step label="{{'TEXT.SOCIAL_MEDIA_LABEL' | translate}}">
+            <div fxLayout="column" fxLayoutAlign="space-around stretch" fxLayoutGap="5px">
+              <mat-form-field class="asterisk">
+                <input matInput placeholder="{{'INPUT.WEBSITE.PLACEHOLDER' | translate}}" formControlName="website">
+                <mat-error *ngIf="this.formGroup.controls.website.invalid">
+                  {{getErrorMessage('website')}}
+                </mat-error>
+                <mat-icon matSuffix matTooltip="{{'INPUT.URL.ERROR' | translate}}" matTooltipPosition="above">
+                  info
+                </mat-icon>
+              </mat-form-field>
+              <mat-form-field class="asterisk" hintLabel="{{'INPUT.FACEBOOK_PAGE.HINT' | translate}}">
+                <input matInput placeholder="{{'INPUT.FACEBOOK_PAGE.PLACEHOLDER' | translate}}" formControlName="facebook_page">
+         
+                <mat-icon matSuffix matTooltip="{{'INPUT.URL.ERROR' | translate}}" matTooltipPosition="above">
+                  info
+                </mat-icon>
+              </mat-form-field>
+              <mat-form-field class="asterisk" hintLabel="{{'INPUT.INSTA_PAGE.HINT' | translate}}">
+                <input matInput placeholder="{{'INPUT.INSTA_PAGE.PLACEHOLDER' | translate}}" formControlName="insta_page">
+            
+                <mat-icon matSuffix matTooltip="{{'INPUT.URL.ERROR' | translate}}" matTooltipPosition="above">
+                  info
+                </mat-icon>
+              </mat-form-field>
+              <mat-form-field class="asterisk" hintLabel="{{'INPUT.TWITTER_PAGE.HINT' | translate}}">
+                <input matInput placeholder="{{'INPUT.TWITTER_PAGE.PLACEHOLDER' | translate}}" formControlName="twitter_page">
+            
+                <mat-icon matSuffix matTooltip="{{'INPUT.URL.ERROR' | translate}}" matTooltipPosition="above">
+                  info
+                </mat-icon>
+              </mat-form-field>
+              <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+                <button type="button" mat-raised-button matStepperNext color="primary">
+                  {{'TEXT.CONTINUE' | translate}}
+                </button>
+                <button type="button" color="warn" mat-button matStepperPrevious>
+                  {{'TEXT.BACK_STEP' | translate}}
+                </button>
+              </div>
+            </div>
+          </mat-step>
+          <mat-step label="{{'TEXT.IMAGES_LABEL' | translate}}">
+            <div fxLayout="column" fxLayoutAlign="center stretch" fxLayoutGap="20px">
+              <!-- MAIN IMAGE-->
+              <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px">
+                <strong>{{'TEXT.BRAND_MAIN_IMAGE_LABEL' | translate}}</strong>
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                  <div>
+                    <img class="square-image" [src]="this.baseModel.mainImageDataURI" *ngIf="this.baseModel.mainImageDataURI" />
+                    <img class="square-image" src="{{this.baseModel.mainImagePath}}" *ngIf="this.baseModel.mainImagePath" />
+                  </div>
+                  <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px">
+                    <button type="button" mat-raised-button type="button" class="mt-4 feed-black-button" (click)="openImageDialog(this.constantList.BRAND_MAIN_IMAGE_TYPE)">
+                      {{'TEXT.IMAGE_BUTTON' | translate}}
+                    </button>
+                    <span>({{'TEXT.MAX_FILE_WARN' | translate}})</span>
+                  </div>
+                </div>
+              </div>
+              <!-- LOGO IMAGE-->
+              <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px">
+                <strong>{{'TEXT.BRAND_LOGO_IMAGE_LABEL' | translate}}</strong>
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                  <div>
+                    <img class="square-image" [src]="this.baseModel.logoImageDataURI" *ngIf="this.baseModel.logoImageDataURI" />
+                    <img class="square-image" src="{{this.baseModel.logoImagePath}}" *ngIf="this.baseModel.logoImagePath" />
+                  </div>
+                  <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px">
+                    <button type="button" mat-raised-button type="button" class="mt-4 feed-black-button" (click)="openImageDialog(this.constantList.BRAND_LOGO_IMAGE_TYPE)">
+                      {{'TEXT.IMAGE_BUTTON' | translate}}
+                    </button>
+                    <span>({{'TEXT.MAX_FILE_WARN' | translate}})</span>
+                  </div>
+                </div>
+              </div>
+              <!-- SECONDARY IMAGES-->
+              <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px">
+                <strong>{{'TEXT.BRAND_SECONDARY_IMAGE_LABEL' | translate}}</strong>
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                  <div class="images-row">
+                    <div class="images-column" *ngFor="let uploadFilesImage of photosAlbumData;let i = index">
+                      <img fxFlex="100%" [src]="uploadFilesImage.image" class="image-shadow">
+                      <mat-icon (click)="removeImage(i,uploadFilesImage)">cancel</mat-icon>
+                    </div>
+                  </div>
+                  <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px">
+                      <button type="button" mat-raised-button type="button" class="mt-4 feed-black-button" (click)="openImageDialog(this.constantList.BRAND_SECONDARY_IMAGE_TYPE)">
+                        {{'TEXT.IMAGE_BUTTON' | translate}}
+                      </button>
+                      <span>({{'TEXT.MAX_FILE_WARN' | translate}})</span>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </mat-step>
+        </mat-vertical-stepper>
+        <div *ngIf="!this.baseModel.business_reference_id" fxLayout="row" fxLayoutAlign="center center"><span class="bottom-hint">{{'INPUT.FORM_HINT.HINT' |  translate}}</span></div>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+      <mat-card-actions>
+        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+          <button mat-raised-button color="primary" type="button" [attr.aria-label]="'BUTTONS.CANCEL' | translate"
+            (click)="goTo(routeList.CATEGORY_LISTING);">
+            {{'BUTTONS.CANCEL' | translate}}
+          </button>
+          <button mat-raised-button type="button" [attr.aria-label]="'BUTTONS.SAVE' | translate" (click)="onSubmit()"
+            class="submit-button" [disabled]="formGroup.invalid || this.subCategoriesChipList.length==0">
+            {{'BUTTONS.SAVE' | translate}}
+          </button>
+        </div>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+</div>

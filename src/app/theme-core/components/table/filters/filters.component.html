@@ -1,0 +1,77 @@
+<mat-accordion *ngIf="filters.length && params">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Filters
+      </mat-panel-title>
+      <mat-panel-description>
+        Click here for toggle filters
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <form name="formGroup" class="filters" [formGroup]="formGroup" novalidate>
+      <div fxLayout="row" fxLayout.ls-md="column" *ngFor="let chunk of _filters"
+        [fxLayoutAlign.gt-sm]="chunk.length > 1 ? 'space-around' : ''"
+        [ngClass]="chunk.length === 1 ? 'form-single-field' : ''">
+        <mat-form-field *ngFor="let filter of chunk" [ngSwitch]="filter.type"
+          [fxFlex]="chunk.length === 1 ? '49%' : '48%'"
+          fxFlex.ls-md="100%" [appearance]="constantList.FORM_FIELD_APPREANCE">
+          <mat-label *ngIf="filter.label" [innerHtml]="filter.label"></mat-label>
+          <mat-select *ngSwitchCase="'option'"
+            formControlName="{{filter.key}}" placeholder="{{filter.placeholder}}"
+            (selectionChange)="onSelectChange($event, filter.key || null);"
+            [value]="filter.selectedValue != null ? filter.selectedValue : null"
+            [compareWith]="compareSingleDropdownFn" [multiple]="filter.multiple">
+            <mat-option *ngFor="let dp of filter.dropdowns" [value]="dp.value">
+              {{ dp.name }}
+            </mat-option>
+          </mat-select>
+
+          <input matInput *ngSwitchCase="'text'" type="text"
+            formControlName="{{filter.key}}"
+            placeholder="{{filter.placeholder}}"
+            (input)="onInputChange($event.target.value, filter.key || null)" />
+
+          <input matInput *ngSwitchCase="'number'" type="number"
+            formControlName="{{filter.key}}"
+            placeholder="{{filter.placeholder}}"
+            (input)="onInputChange($event.target.value, filter.key || null)" />
+
+          <input matInput *ngSwitchCase="'autocomplete'" type="text"
+          formControlName="{{filter.key}}"
+          placeholder="{{filter.placeholder}}"
+          [matAutocomplete]="auto" >
+           <mat-autocomplete  autoActiveFirstOption #auto="matAutocomplete"
+           (optionSelected)="onAutocompleteChange($event, filter.key || null)">
+            <mat-option *ngFor="let option of filteredOptions | async" [value]="option.email">
+              {{option.email}}
+            </mat-option>
+          </mat-autocomplete>
+
+          <input matInput *ngSwitchCase="'date'"
+            formControlName="{{filter.key}}"
+            [matDatepicker]="filterDate"
+            placeholder="{{filter.placeholder}}"
+            (dateInput)="changeDate($event, filter.key)"
+            (dateChange)="changeDate($event, filter.key)"
+            (click)="filterDate.open();">
+            <mat-datepicker-toggle *ngSwitchCase="'date'" matSuffix [disabled]="false"
+              [for]="filterDate"></mat-datepicker-toggle>
+            <mat-datepicker touchUi #filterDate></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <mat-action-row>
+        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+          <button mat-stroked-button color="warn" type="button" aria-label="Reset"
+            (click)="resetForm();">
+            Reset
+          </button>
+          <button mat-stroked-button color="pink" type="button" aria-label="Search"
+            (click)="emitSearchEvent();">
+            Search
+          </button>
+        </div>
+      </mat-action-row>
+    </form>
+  </mat-expansion-panel>
+</mat-accordion>

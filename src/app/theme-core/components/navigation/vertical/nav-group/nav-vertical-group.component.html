@@ -1,0 +1,11 @@
+<div class="group-title">
+  <span class="hint-text white-font-color" [translate]="item.translate">{{ item.title }}</span>
+</div>
+
+<div class="group-items">
+  <ng-container *ngFor="let item of item.children">
+    <skrambler-nav-vertical-group *ngIf="item.type == 'group'" [item]="item"></skrambler-nav-vertical-group>
+    <skrambler-nav-vertical-collapse *ngIf="item.type == 'collapse'" [item]="item"></skrambler-nav-vertical-collapse>
+    <skrambler-nav-vertical-item *ngIf="item.type == 'item' && item.isAllow" [item]="item"></skrambler-nav-vertical-item>
+  </ng-container>
+</div>

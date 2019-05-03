@@ -1,0 +1,20 @@
+<div class="navbar-header skrambler-primary-red-color">
+
+  <div class="logo">
+    <!-- <img class="logo-icon" src="assets/images/logos/admin_panel.png"> -->
+    <span class="logo-text white-font-color">SKRAMBLER</span>
+  </div>
+
+  <button mat-button class="toggle-button-navbar mat-icon-button" skramblerNavbarVertical="toggleFold" fxHide.lt-lg>
+    <mat-icon class="white-font-color">menu</mat-icon>
+  </button>
+
+  <button mat-button class="toggle-button-navbar mat-icon-button" skramblerNavbarVertical="closeBar" fxHide.gt-md>
+    <mat-icon class="white-font-color">arrow_back</mat-icon>
+  </button>
+
+</div>
+
+<div class="navbar-content" skramblerPerfectScrollbar>
+  <skrambler-navigation layout="vertical"></skrambler-navigation>
+</div>

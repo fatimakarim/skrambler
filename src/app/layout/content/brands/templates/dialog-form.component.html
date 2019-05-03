@@ -1,0 +1,52 @@
+  <form name="formGroup" [formGroup]="formGroup" novalidate>
+      <div fxLayout="column" fxLayoutGap="10px">
+        <h2 class="mat-headline" fxFill [innerHtml]="pageTitle"></h2>
+        <span class="pop-up-sub-title" *ngIf="this.record.id">{{'TEXT.ID' | translate}}: {{this.record.id}}</span>
+      </div>
+    <br>
+    <mat-divider></mat-divider>
+     <br>
+      <div fxLayout="column" fxLayoutAlign="space-between stretch">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+          <!-- Email -->
+          <mat-form-field fxFlex="45%" class="asterisk mat-form-field"
+                          [appearance]="this.constantList.FORM_FIELD_APPREANCE">
+            <mat-label>{{'INPUT.EMAIL.LABEL' | translate}}</mat-label>
+            <input matInput type="email"  placeholder="{{'INPUT.EMAIL.PLACEHOLDER' | translate}}"
+                   formControlName="email" required/>
+            <mat-error *ngIf="formGroup.controls.email.invalid">
+              {{getErrorMessage('email')}}
+            </mat-error>
+          </mat-form-field>
+
+          <!--Date-->
+          <mat-form-field fxFlex="45%" class="asterisk mat-form-field"
+                          [appearance]="this.constantList.FORM_FIELD_APPREANCE">
+            <mat-label>{{'INPUT.DATE.LABEL' | translate}}</mat-label>
+            <input matInput [matDatepicker]="picker" placeholder="{{'INPUT.DATE.PLACEHOLDER' | translate}}"
+                   formControlName="date" required>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker (monthSelected)="monthSelected($event)" startView="multi-year"></mat-datepicker>
+            <mat-error *ngIf="formGroup.controls.date.invalid">
+              {{getErrorMessage('date')}}
+            </mat-error>
+          </mat-form-field>
+
+        </div>
+      </div>
+    <br>
+    <mat-divider></mat-divider>
+    <br>
+      <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+        <button mat-stroked-button color="primary" type="button" [attr.aria-label]="'BUTTONS.CANCEL' | translate"
+                mat-dialog-close>
+          {{'BUTTONS.CANCEL' | translate}}
+        </button>
+        <button mat-raised-button type="button" [attr.aria-label]="'BUTTONS.SAVE' | translate"
+                class="submit-button"
+                (click)="onSubmit()"
+                [disabled]="formGroup.invalid">
+          {{'BUTTONS.SAVE' | translate}}
+        </button>
+      </div>
+  </form>

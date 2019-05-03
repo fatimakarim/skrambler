@@ -1,0 +1,373 @@
+@import "../../theme-core/scss/skrambler.scss";
+
+
+:host {
+
+  ::ng-deep {
+
+    // for making all the font-color as white
+    .mat-error,
+    .mat-checkbox,
+    .mat-form-field-label,
+    .mat-icon,
+    .material-icons {
+      color: white !important;
+    }
+
+    mat-checkbox {
+      font-size: 13px;
+    }
+
+    .mat-card {
+      background: none !important;
+      box-shadow: none !important;
+      color: white !important;
+    }
+
+    .mat-checkbox-frame {
+      border-color: white !important;
+    }
+
+    button {
+      color: #ec4154 !important;
+    }
+
+    .mat-checkbox-checkmark-path {
+      stroke: #ec4154 !important
+    }
+
+    // for making the underlines in field as white
+    .mat-form-field-ripple,
+    .mat-form-field-underline {
+      background-color: white !important;
+    }
+  }
+
+  // for making all input fields as white font color
+  input,
+  input::placeholder {
+    color: white !important;
+    caret-color: white !important;
+  }
+
+  ::-webkit-input-placeholder {
+    /* Chrome/Opera/Safari */
+    color: white !important;
+    caret-color: white !important;
+  }
+
+  ::-moz-placeholder {
+    /* Firefox 19+ */
+    color: white !important;
+    caret-color: white !important;
+  }
+
+  :-ms-input-placeholder {
+    /* IE 10+ */
+    color: white !important;
+    caret-color: white !important;
+  }
+
+  :-moz-placeholder {
+    /* Firefox 18- */
+    color: white !important;
+    caret-color: white !important;
+  }
+
+  a {
+    cursor: pointer;
+  }
+
+  #login {
+    width: 100%;
+    overflow: auto;
+
+    .register-wrapper-top {
+      padding-top: 200px;
+      width: 45% !important;
+    }
+
+    #register-wrapper {
+      background: #191919;
+      background-size: cover;
+
+      mat-card {
+        box-shadow: none !important;
+        background: #191919;
+        background-size: cover;
+        color: white;
+        max-width: 500px;
+
+        mat-card-content {
+          padding-bottom: 50px;
+        }
+
+        mat-card-actions {
+          >a {
+            padding: 0 70px 0 70px;
+          }
+        }
+
+        mat-card-header {
+
+          .header-title-text,
+          .mat-header {
+            margin: 0 !important;
+            font-size: 2.4em;
+            padding-bottom: 20px;
+          }
+        }
+
+        .content {
+          margin: 0 8px;
+          font-size: 1.6em;
+        }
+
+        .register-card-button {
+          margin: 0 8px;
+        }
+      }
+    }
+
+    .login-form-wrapper {
+      flex: 1 0 auto;
+      padding: 32px;
+      // background: linear-gradient(171deg, white 0%, white 0%, white 46%, white 0%, white 100%);
+      background: url(../../../assets/images/skrambler-login-background.png);
+      background-size: cover;
+
+      @include media-breakpoint('xs') {
+        padding: 16px;
+      }
+
+      .login-form.noshadow {
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+      }
+
+      .logo {
+        width: 25%;
+        //margin: 32px auto;
+      }
+
+      .forgot-password-form {
+        width: 500px;
+        max-width: 500px;
+
+        @include media-breakpoint('xs') {
+          padding: 24px;
+          width: 100%;
+        }
+
+        mat-card {
+          mat-card-header {
+            .back-button {
+              margin-right: 20px;
+              cursor: pointer;
+            }
+          }
+
+          mat-card-content {
+            margin-top: 40px;
+            padding: 20px;
+          }
+        }
+
+        form {
+          width: 100%;
+          text-align: left;
+
+          mat-form-field {
+            width: 100%;
+          }
+
+          mat-checkbox {
+            margin: 0;
+          }
+
+          .remember-forgot-password {
+            font-size: 13px;
+            margin-top: 8px;
+
+            .remember-me {
+              margin-bottom: 16px
+            }
+
+            .forgot-password {
+              font-size: 13px;
+              font-weight: 500;
+              margin-bottom: 16px
+            }
+
+            a {
+              // color: #191919;
+            }
+          }
+
+          .submit-button {
+            width: 220px;
+            display: block;
+            margin: 50px auto;
+
+            @include media-breakpoint('xs') {
+              width: 90%;
+            }
+          }
+        }
+      }
+
+      .login-form {
+        width: 500px;
+        max-width: 500px;
+        padding: 50px;
+
+        //background: #FFFFFF;
+        .mat-black-bg[disabled] {
+          color: white !important;
+        }
+
+        @include mat-elevation(16);
+
+        @include media-breakpoint('xs') {
+          padding: 24px;
+          width: 100%;
+        }
+
+        .title {
+          font-size: 20px;
+          margin: 16px 0 32px 0;
+        }
+
+        form {
+          width: 100%;
+          text-align: left;
+
+          mat-form-field {
+            width: 100%;
+          }
+
+          mat-checkbox {
+            margin: 0;
+          }
+
+          .remember-forgot-password {
+            font-size: 13px;
+            margin-top: 8px;
+
+            .remember-me {
+              margin-bottom: 16px
+            }
+
+            .forgot-password {
+              font-size: 13px;
+              margin-bottom: 16px
+            }
+
+            a {
+              // color: #191919;
+            }
+          }
+
+          .submit-button {
+            width: 220px;
+            display: block;
+            margin: 50px auto;
+
+            @include media-breakpoint('xs') {
+              width: 90%;
+            }
+          }
+        }
+
+        .register {
+          margin: 32px auto 24px auto;
+          font-weight: 500;
+
+          .text {
+            margin-right: 8px;
+          }
+        }
+
+        .separator {
+          font-size: 15px;
+          font-weight: 600;
+          margin: 24px auto;
+          position: relative;
+          overflow: hidden;
+          width: 100px;
+          color: rgba(0, 0, 0, 0.54);
+
+          .text {
+            display: inline-flex;
+            position: relative;
+            padding: 0 8px;
+            z-index: 9999;
+
+            &:before,
+            &:after {
+              content: '';
+              display: block;
+              width: 30px;
+              position: absolute;
+              top: 10px;
+              border-top: 1px solid rgba(0, 0, 0, 0.12);
+            }
+
+            &:before {
+              right: 100%;
+            }
+
+            &:after {
+              left: 100%;
+            }
+          }
+        }
+
+        button {
+
+          &.google,
+          &.facebook {
+            width: 192px;
+            text-transform: none;
+            color: #FFFFFF;
+            font-size: 13px;
+          }
+
+          @include media-breakpoint('xs') {
+            width: 80%;
+          }
+
+          &.google {
+            background-color: #D73D32;
+            margin-bottom: 8px;
+          }
+
+          &.facebook {
+            background-color: rgb(63, 92, 154);
+          }
+        }
+      }
+    }
+  }
+
+  .error-msg,
+  .success-msg {
+    padding-bottom: 2rem;
+  }
+
+  .error-msg span {
+    color: mat-color($warn);
+    font-size: 1.8rem;
+  }
+
+  .error-msg div {
+    color: mat-color($warn);
+    font-size: 1.8rem;
+  }
+
+  .success-msg span {
+    color: mat-color($success);
+    font-size: 1.8rem;
+  }
+}

@@ -1,0 +1,68 @@
+<mat-toolbar class="p-0 mat-elevation-z1">
+  <mat-progress-bar *ngIf="showLoadingBar" class="loading-bar" color="pink" mode="indeterminate"></mat-progress-bar>
+
+  <div fxFlex fxFill fxLayout="row" fxLayoutAlign="start center">
+
+    <div fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
+
+      <button mat-button class="toggle-button-navbar mat-icon-button white-font-color" gpulseNavbarVertical="toggleBar"
+        fxHide.gt-md>
+        <mat-icon class="white-font-color">menu</mat-icon>
+      </button>
+
+      <div class="toolbar-separator" fxHide.gt-md></div>
+
+      <div fxLayout="row" fxLayoutAlign="start center" *ngIf="horizontalNav">
+        <!-- <div class="logo ml-16">
+          <img class="logo-icon" src="assets/images/logos/admin_panel.png">
+        </div> -->
+      </div>
+
+    </div>
+
+    <!-- <div fxFlex="45 0 auto" fxLayout="row" fxLayoutAlign="start center">
+      <mat-form-field appearance="legacy">
+        <input matInput placeholder="Search">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div> -->
+    <div class="" fxFlex="0 1 auto" fxLayout="row" fxLayoutAlign="start center">
+
+      <button mat-button [matMenuTriggerFor]="userMenu" class="user-button">
+        <div fxLayout="row" fxLayoutAlign="center center">
+          <!-- <img class="avatar" src="assets/images/avatars/profile.jpg"> -->
+          <span class="username mr-12 white-font-color" fxHide fxShow.gt-sm [innerHtml]="[userService.user.first_name,userService.user.last_name].join(' ')"></span>
+          <mat-icon class="s-16 white-font-color" fxHide.xs>keyboard_arrow_down</mat-icon>
+        </div>
+      </button>
+
+      <mat-menu #userMenu="matMenu" [overlapTrigger]="false">
+        <!-- 
+        <button mat-menu-item (click)="goTo('/account/profile');">
+          <mat-icon>account_circle</mat-icon>
+          <span>My Profile</span>
+        </button> -->
+
+        <button mat-menu-item (click)="goTo('/account/reset-password');">
+          <mat-icon>vpn_key</mat-icon>
+          <span>Change Password</span>
+        </button>
+
+        <button mat-menu-item (click)="logoutUser();">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Logout</span>
+        </button>
+
+      </mat-menu>
+
+      <div class="toolbar-separator"></div>
+
+      <skrambler-search-bar (onInput)="this.search($event)"></skrambler-search-bar>
+
+      <div class="toolbar-separator"></div>
+
+      <div class="toolbar-separator" fxHide fxShow.gt-xs></div>
+
+    </div>
+  </div>
+</mat-toolbar>

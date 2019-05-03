@@ -1,0 +1,177 @@
+<div class="page-layout blank p-24 mb-50" skramblerPerfectScrollbar fxLayout="column" fxLayoutAlign="space-around stretch">
+  <div fxLayout="row" fxLayoutAlign="space-around center">
+    <!-- <div fxLayout="row" fxLayoutAlign="space-between center"> -->
+
+    <mat-form-field fxFlex="40%" fxFlexFill>
+      <mat-select [(ngModel)]="selectedCategoryId" [disabled]="!this._permissionService.isAdmin()" form placeholder="{{'TEXT.SELECT_DASHBOARD_CATEGORY' | translate}}"
+        (selectionChange)="onCategoryChange($event)">
+        <mat-option>--</mat-option>
+        <mat-option *ngFor="let category of this.parentCategories" [value]="category.id">
+          {{category.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- BRAND -->
+    <skrambler-brand-search #brandSearch fxFlex="40%" [categoryId]="this.selectedCategory" [placeHolderText]="'TEXT.SELECT_DASHBOARD_BRAND' | translate" [isRequired]="true"
+    [isDisabled]="!this._permissionService.isAdmin()" 
+      [preSelectedBrand]="this.baseModel.brand" (selectedBrand)="onBrandChange($event)">
+    </skrambler-brand-search>
+
+    <!-- </div> -->
+  </div>
+  <mat-card *ngIf="showData">
+    <div fxLayout="column" fxLayoutAlign="space-between stretch">
+      <div fxLayout="column" fxLayoutAlign="space-between stretch" fxFlex="55%" fxLayoutGap="10px">
+        <div fxLayout.gt-xs="row" fxLayout.lt-md="column" fxLayoutAlign="space-between stretch" fxLayoutGap="10px">
+          <div fxFlex="30%">
+            <mat-card fxFill>
+              <mat-card-content class="log-allign">
+                <div fxLayout="row" fxLayoutAlign="center center">
+                  <img mat-card-lg-image src="{{this.brand?.logo}}">
+                </div>
+              </mat-card-content>
+              <mat-divider>
+              </mat-divider>
+              <mat-card-actions class="p-12">
+                <div fxLayout="row" fxLayoutAlign="space-around center">
+                  <button [routerLink]="'/'+routeList.BRAND_VIEW+'/'+this.brand?.business_reference_id"
+                    mat-raised-button>
+                    {{'BUTTONS.VIEW' | translate}}</button>
+
+                  <button [routerLink]="'/'+routeList.BRAND_LISTING+'/'+this.brand?.business_reference_id"
+                    mat-raised-button color="primary">
+                    {{'BUTTONS.EDIT' | translate}}</button>
+                </div>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+
+          <div fxFlex="30%">
+            <h1>{{this.brand?.name}}</h1>
+            <h3>{{this.brand?.category.name}}</h3>
+            <h3>{{this.brand?.brand_sub_categories[0].sub_category.name}}</h3>
+            <h3>{{this.brand?.website}}</h3>
+          </div>
+
+          <div fxFlex="30%">
+                  <mat-card class="card-branch">
+                    <mat-card-content class="card-branch-content">
+                      <div fxLayout="column" fxLayoutAlign="space-between center" fxLayoutGap="5px">
+                        <div fxLayout="row" fxLayoutAlign="space-around center" fxLayoutGap="5px">
+                          <img class="icon-branch-count" src="assets\images\cards\branches.png">
+                          <h1><b class="branch-font">{{this.branchesInfo?.totalBranches}}</b></h1>
+                          <h1><b class="branch-font">{{'TEXT.BRANCHES_TITLE' | translate}}</b></h1>
+                        </div>
+                      </div>
+      
+                      <div fxLayout="row" fxLayoutAlign="space-between center">
+                        <div fxLayout="column" fxLayoutAlign="space-between center">
+                          <img class="active-inactive-img" src="assets\images\cards\active-branch.png">
+                          <h3 class="active-fonts active-inactive">{{this.branchesInfo?.activeBranches}} {{'TEXT.ACTIVE' | translate}}</h3>
+                        </div>
+      
+                        <div fxLayout="column" fxLayoutAlign="space-between center">
+                          <img class="inactive-branch" src="assets\images\cards\active-branch.png">
+                          <h3 class="inactive-fonts active-inactive">{{this.branchesInfo?.inactiveBranches}} {{'TEXT.INACTIVE' | translate}}</h3>
+                        </div>
+                      </div>
+      
+                    </mat-card-content>
+                    <mat-divider class="card-branch-divider"></mat-divider>
+                    <div fxLayout="row" fxLayoutAlign="center end" class="ngv-mrgn cursor" (click)="redirectToBranch()">
+                        <a>
+                          <i class="material-icons icon-add-branch">add_circle</i>
+                        </a>
+
+                      </div>
+                    <div fxLayout="row" fxLayoutAlign="space-around center">
+                      <button [routerLink]="'/'+routeList.BRANCH_CREATE+'/'+this.brand?.business_reference_id"
+                              mat-raised-button color="primary">
+                        {{'BUTTONS.ADD_BRANCH' | translate}}</button>
+                    </div>
+                  </mat-card>
+          </div>
+         
+
+        </div>
+
+        <div fxLayout="column" fxLayoutAlign="space-between stretch" fxFlex="25%" fxLayoutGap="10px">
+          <div fxLayout="column" fxLayoutAlign="space-between stretch">
+            <mat-divider class="mgn-top"></mat-divider>
+          </div>
+              <div fxFlexAlign="center" >
+                   <h1> {{'TEXT.DASHBOARD_BRANCHES' | translate}} </h1>
+              </div>
+            <div fxLayout="row" fxLayoutAlign="space-between stretch">
+              <mat-form-field fxFill>
+                <mat-select placeholder="{{'TEXT.BRANCH_LABEL' | translate}}"
+                            (selectionChange)="onSelectBranchChange($event)"  >
+                  <mat-option *ngFor="let branch of this.brand.branches; let i=index" [value]="branch">
+                    {{ branch.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+            </div>
+
+            <div fxLayout="column" fxLayoutAlign="start stretch">
+           
+              <agm-map (mapReady)="onMapReady($event)"  #AgmMap
+                        [latitude]="lat" [longitude]="lng"
+                        [zoom]="zoom">
+                <agm-marker *ngFor="let m of markerList let i = index;"
+                            [latitude]="convertStringToNumber(m.latitude)"
+                            (markerClick)='markerClicked($event,m)'
+                            [longitude]="convertStringToNumber(m.longitude)">
+                  <agm-info-window #infoWindow>
+                    <strong>{{m.name}}</strong>
+                  </agm-info-window>
+                </agm-marker>
+              </agm-map>
+           
+            </div>
+            
+        </div>
+     <div *ngIf="branchData">
+       <div fxLayout="row" fxLayoutAlign="end center">
+          <button [routerLink]="'/'+routeList.BRANCH_CREATE" mat-raised-button
+          color="primary">
+          {{'BUTTONS.ADD_BRANCH' | translate}}</button>
+       </div>
+        <hr>
+        <div  fxLayout="row" fxLayoutAlign="start start">
+           
+            <div fxLayout="column" fxFlex="30" fxLayoutAlign="space-between start">
+              <h1>{{branchInfo?.name}}</h1>
+              <button [routerLink]="'/'+routeList.BRANCHES_LISTING+'/'+this.branchInfo?.business_reference_id" mat-raised-button
+                color="primary">
+                {{'BUTTONS.EDIT' | translate}}</button>
+            </div>
+           
+            <div fxLayout="column" fxFlex="25" fxLayoutAlign="space-between start">
+              <h4>Code: {{this.branchInfo?.code}}</h4>
+              <h4>{{branchInfo?.location_name ? branchInfo?.location_name : "--"}}</h4>
+            </div>
+            
+            <div fxLayout="column" fxFlex="25" fxLayoutAlign="space-between start">
+                <h4>{{branchInfo?.phone ? branchInfo?.phone : "--"}}</h4>
+              <h4></h4>
+            
+            </div>
+          </div>
+
+          <hr>
+     </div>
+        
+        <div fxLayoutGap="10px">
+          <skrambler-offer-list [brandBusiness_reference_id]="this.brand.business_reference_id"></skrambler-offer-list>
+        </div>
+      </div>
+
+    </div>
+  </mat-card>
+  <div fxLayout="row" fxLayoutAlign="space-around center" *ngIf="!showData">
+    <h1>{{'TEXT.ADMIN_TEXT' | translate}}</h1>
+  </div>
+</div>

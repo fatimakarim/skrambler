@@ -1,0 +1,19 @@
+<mat-form-field fxFlex="100%" [formGroup]="formGroup" [ngClass]="{'asterisk': isRequiredField}">
+  <input [required]="isRequiredField"
+         matInput
+         [matAutocomplete]="auto"
+         placeholder="{{placeHolderText}}"
+         formControlName="search_box">
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event)">
+    <mat-option *ngFor="let option of results | async"
+                [value]="option">
+      {{getFormattedText(option)}}
+    </mat-option>
+  </mat-autocomplete>
+  <mat-error *ngIf="this.formGroup.controls.search_box.invalid">
+    {{getErrorMessage()}}
+  </mat-error>
+  <mat-icon *ngIf="toolTipText" matSuffix matTooltip="{{toolTipText}}"
+            matTooltipPosition="above">info
+  </mat-icon>
+</mat-form-field>

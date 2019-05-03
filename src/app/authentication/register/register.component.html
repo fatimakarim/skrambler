@@ -1,0 +1,78 @@
+<div id="register" class="h-100-p" fxLayout="column" skramblerPerfectScrollbar>
+
+  <div id="register-form-wrapper" fxLayout="column" fxLayoutAlign="center center">
+
+    <div id="register-form" *skramblerIfOnDom [@animate]="{value:'*',params:{duration:'300ms',y:'100px'}}">
+
+      <div class="logo">
+        <img src="assets/images/logos/admin_panel.png ">
+      </div>
+
+      <div class="title">{{'TEXT.FORM_TITLE' | translate}}
+      </div>
+
+      <form name="formGroup" [formGroup]="formGroup" novalidate>
+        <mat-form-field>
+          <input matInput placeholder="{{'INPUT.FIRST_NAME.PLACEHOLDER' | translate}}"
+            formControlName="first_name">
+          <mat-error *ngIf="this.formGroup.controls.first_name.invalid">{{getErrorMessage('first_name')}}</mat-error>
+          <mat-icon matSuffix
+                    *ngIf="this.formGroup.controls.first_name.valid">
+            <i class="material-icons green-900-fg">check</i></mat-icon>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput placeholder="{{'INPUT.LAST_NAME.PLACEHOLDER' | translate}}"
+            formControlName="last_name">
+          <mat-error *ngIf="this.formGroup.controls.last_name.invalid">{{getErrorMessage('last_name')}}</mat-error>
+          <mat-icon matSuffix
+                    *ngIf="this.formGroup.controls.last_name.valid">
+            <i class="material-icons green-900-fg">check</i></mat-icon>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput placeholder="{{'INPUT.EMAIL.PLACEHOLDER' | translate}}" formControlName="email">
+          <mat-error *ngIf="this.formGroup.controls.email.invalid">{{getErrorMessage('email')}}</mat-error>
+          <mat-icon matSuffix
+                    *ngIf="this.formGroup.controls.email.valid">
+            <i class="material-icons green-900-fg">check</i></mat-icon>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="password" placeholder="{{'INPUT.PASSWORD.PLACEHOLDER' | translate}}" formControlName="password">
+          <mat-error *ngIf="this.formGroup.controls.password.invalid">
+            {{getErrorMessage('password')}}
+          </mat-error>
+          <mat-icon matSuffix *ngIf="this.formGroup.controls.password.valid"><i
+            class="material-icons green-900-fg">check</i></mat-icon>
+        </mat-form-field>
+
+        <div class="remember-forgot-password" fxLayout="row" fxLayout.xs="column"
+             fxLayoutAlign="space-between center">
+          <mat-checkbox class="remember-me" aria-label="Remember Me">
+            {{'TEXT.REMEMBER_ME' | translate}}
+          </mat-checkbox>
+
+          <a class="forgot-password" [routerLink]="'/auth/forgot-password'">
+            {{'BUTTONS.FORGOT_PASSWORD' | translate}}
+          </a>
+        </div>
+
+        <button mat-raised-button color="accent" class="submit-button mat-yellow-bg" aria-label="REGISTER"
+                [disabled]="formGroup.invalid">
+          {{'BUTTONS.REGISTER' | translate}}
+        </button>
+
+      </form>
+
+      <div class="login" fxLayout="column" fxLayoutAlign="center center">
+        <span class="text">{{'TEXT.LOGIN_TITLE' | translate}}</span>
+        <a class="link" [routerLink]="'/auth/login'"> {{'BUTTONS.LOGIN' | translate}}
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

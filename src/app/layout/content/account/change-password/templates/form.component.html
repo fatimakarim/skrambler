@@ -1,0 +1,89 @@
+<div class="page-layout carded fullwidth p-24" [ngClass.lt-sm]="['w-100-p']" uburgerPerfectScrollbar>
+    <mat-card>
+        <form name="formGroup"
+            [formGroup]="formGroup"
+            novalidate>
+          <mat-card-header>
+            <h2 class="mat-headline" fxFill fxLayoutAlign="stretch" [innerHtml]="pageTitle"></h2>
+          </mat-card-header>
+            <mat-divider></mat-divider>
+            <mat-card-content class="pt-20">
+                <div fxLayout="row" fxLayout.ls-md="column" fxLayoutAlign.gt-md="space-around">
+                    <mat-form-field fxFlex="48%" fxFlex.ls-md="100%"
+                        [appearance]="constantList.FORM_FIELD_APPREANCE"
+                        class="asterisk mat-form-field">
+                        <mat-label>{{'INPUT.CURRENT_PASSWORD.LABEL' | translate}}</mat-label>
+                        <input matInput [type]="hideCurrentPass ? 'password' : 'text'"
+                              placeholder="{{'INPUT.CURRENT_PASSWORD.PLACEHOLDER' | translate}}"
+                              formControlName="current_password" required
+                              [minlength]="constantList.PASSWORD_MIN_LENGTH"
+                              [maxlength]="constantList.PASSWORD_MAX_LENGTH" />
+                        <mat-icon matSuffix (click)="hideCurrentPass = !hideCurrentPass"
+                          class="cursor-pointer" [ngClass]="hideCurrentPass ? 'color-accent' : ''">
+                          {{hideCurrentPass ? 'visibility_off' : 'visibility'}}
+                        </mat-icon>
+                        <mat-error *ngIf="formGroup.controls.current_password.invalid">
+                            {{getErrorMessage('current_password')}}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="48%" fxFlex.ls-md="100%"
+                        [appearance]="constantList.FORM_FIELD_APPREANCE"
+                                    class="asterisk mat-form-field">
+                        <mat-label>{{'INPUT.PASSWORD.LABEL' | translate}}</mat-label>
+                        <input matInput [type]="hidePass ? 'password' : 'text'"
+                              placeholder="{{'INPUT.PASSWORD.PLACEHOLDER' | translate}}"
+                              formControlName="password" required
+                              [minlength]="constantList.PASSWORD_MIN_LENGTH"
+                              [maxlength]="constantList.PASSWORD_MAX_LENGTH" />
+                        <mat-icon matSuffix class="cursor-pointer" (click)="hidePass = !hidePass"
+                          [ngClass]="hidePass ? 'color-accent' : ''">
+                          {{hidePass ? 'visibility_off' : 'visibility'}}
+                        </mat-icon>
+                        <mat-error *ngIf="formGroup.controls.password.invalid">
+                            {{getErrorMessage('password')}}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div fxLayout="row" fxLayout.ls-md="column" ngClass.gt-sm="form-single-field">
+                    <mat-form-field fxFill class="asterisk mat-form-field"
+                        [appearance]="constantList.FORM_FIELD_APPREANCE">
+                        <mat-label>{{'INPUT.PASSWORD_CONFIRMATION.LABEL' | translate}}</mat-label>
+                        <input matInput [type]="hideConfirmPass ? 'password' : 'text'"
+                              placeholder="{{'INPUT.PASSWORD_CONFIRMATION.PLACEHOLDER' | translate}}"
+                              formControlName="password_confirmation" required
+                              [minlength]="constantList.PASSWORD_MIN_LENGTH"
+                              [maxlength]="constantList.PASSWORD_MAX_LENGTH" />
+                        <mat-icon matSuffix class="cursor-pointer" (click)="hideConfirmPass = !hideConfirmPass"
+                          [ngClass]="hideConfirmPass ? 'color-accent' : ''">
+                          {{hideConfirmPass ? 'visibility_off' : 'visibility'}}
+                        </mat-icon>
+                        <mat-error *ngIf="formGroup.controls.password_confirmation.invalid">
+                            {{getErrorMessage('password_confirmation')}}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </mat-card-content>
+            <mat-divider></mat-divider>
+            <mat-card-actions>
+                <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+                    <button mat-stroked-button
+                            color="warn"
+                            type="button"
+                            [attr.aria-label]="'BUTTONS.CANCEL' | translate"
+                            (click)="goTo(routeList.DASHBOARD_HOME);">
+                        {{'BUTTONS.CANCEL' | translate}}
+                    </button>
+                    <button mat-stroked-button color="pink"
+                            type="submit"
+                            [attr.aria-label]="'BUTTONS.SAVE' | translate"
+                            (click)="onSubmit()"
+                            [disabled]="isFormSubmitted || formGroup.invalid">
+                        {{'BUTTONS.SAVE' | translate}}
+                    </button>
+                </div>
+            </mat-card-actions>
+        </form>
+    </mat-card>
+</div>

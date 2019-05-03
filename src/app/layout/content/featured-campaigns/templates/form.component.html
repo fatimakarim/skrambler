@@ -1,0 +1,203 @@
+<div class="page-layout carded fullwidth p-24 mb-50" [ngClass.lt-sm]="['w-100-p']" skramblerPerfectScrollbar>
+  <mat-card>
+    <form name="formGroup" [formGroup]="formGroup" novalidate>
+      <mat-card-header>
+        <button class="mat-headline back-button mt-4" (click)="goTo(routeList.CAMPSIGNS_LISTING);">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+
+        <div fxLayout="row" fxFill fxFlex="100%" class="pl-24 pr-24">
+          <h2 class="mat-headline" fxFlex="50" fxLayoutAlign="stretch" [innerHtml]="pageTitle"></h2>
+          <div fxFlex="50" fxLayoutAlign="end" fxLayout="row" class="h-44">
+            <span class="mr-8 mat-subheading-2" *ngIf="baseModel.active == 1">
+              <strong>{{'TEXT.ACTIVE' | translate}}</strong>
+            </span>
+            <span class="mr-8 mat-subheading-2" *ngIf="baseModel.active == 0">
+              <strong>{{'TEXT.INACTIVE' | translate}}</strong>
+            </span>
+            <mat-slide-toggle [checked]="baseModel.active" color="primary" aria-label="{{'INPUT.STATUS.PLACEHOLDER' | translate}}"
+            (change)="changeStatus($event)"></mat-slide-toggle>
+          </div>
+        </div>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content class="pt-20">
+        <mat-vertical-stepper class="w-100-p">
+          <mat-step label="{{'TEXT.CAMPAIGN_DETAILS_LABEL' | translate}}" fxLayout="column" fxLayoutAlign="space-around center">
+            <div fxLayout="column" fxLayoutAlign="space-around stretch" fxLayoutGap="5px">
+              <!-- BRAND -->
+              <skrambler-brand-search [placeHolderText]="'TEXT.SELECT_BRAND' | translate" [isRequired]="true"
+                [preSelectedBrand]="this.baseModel.brand" (selectedBrand)="onBrandChange($event)">
+              </skrambler-brand-search>
+              <!-- CAMPAIGN NAME -->
+              <mat-form-field class="asterisk mat-form-field">
+                <mat-label>{{'INPUT.TITLE.LABEL' | translate}}</mat-label>
+                <input matInput placeholder="{{'INPUT.TITLE.PLACEHOLDER' | translate}}" formControlName="title"
+                  [required]="formGroup.get('title').errors !== null">
+                <mat-error *ngIf="this.formGroup.controls.title.invalid">
+                  {{getErrorMessage('title')}}
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="asterisk mat-form-field">
+                  <mat-label>{{'INPUT.DESCRIPTION.LABEL' | translate}}</mat-label>
+                  <textarea matInput placeholder="{{'INPUT.DESCRIPTION.PLACEHOLDER' | translate}}" formControlName="description"
+                  matTextareaAutosize matAutosizeMinRows="{{this.constantList.MAX_AUTO_SIZE_MIN_ROWS}}"
+                  matAutosizeMaxRows="{{this.constantList.MAX_AUTO_SIZE_MAX_ROWS}}" required>
+                  </textarea>
+              </mat-form-field>
+              <div fxLayout="column" fxLayoutAlign="start start">
+                <button type="button" mat-raised-button matStepperNext color="primary">
+                  {{'TEXT.CONTINUE' | translate}}
+                </button>
+              </div>
+            </div>
+
+          </mat-step>
+
+          <mat-step label="{{'TEXT.IMAGE_LABEL' | translate}}">
+            <div fxLayout="column" fxLayoutAlign="center stretch" fxLayoutGap="20px">
+              <!-- MAIN IMAGE-->
+              <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px">
+                <strong>{{'TEXT.IMAGE_LABEL' | translate}}</strong>
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                  <div>
+                    <img class="square-image" [src]="this.baseModel.mainImageDataURI" *ngIf="this.baseModel.mainImageDataURI" />
+                    <img class="square-image" src="{{this.baseModel.mainImagePath}}" *ngIf="this.baseModel.mainImagePath" />
+                  </div>
+                  <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px">
+                    <button type="button" mat-raised-button type="button" class="mt-4 feed-black-button" (click)="openImageDialog(this.constantList.CAMPAIGN_MAIN_IMAGE_TYPE)">
+                      {{'TEXT.IMAGE_BUTTON' | translate}}
+                    </button>
+                    <span>({{'TEXT.MAX_FILE_WARN' | translate}})</span>
+                  </div>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+                <button type="button" mat-raised-button matStepperNext color="primary">
+                  {{'TEXT.CONTINUE' | translate}}
+                </button>
+                <button type="button" color="warn" mat-button matStepperPrevious>
+                  {{'TEXT.BACK_STEP' | translate}}
+                </button>
+              </div>
+            </div>
+          </mat-step>
+
+          <mat-step label="{{'TEXT.CRITIRIA_LABEL' | translate}}">
+            <div fxLayout="column" fxLayoutAlign="space-around stretch" fxLayoutGap="5px">
+              <!-- GENDER -->
+              <mat-form-field class="asterisk mat-form-field">
+                <mat-select formControlName="gender" placeholder="{{'INPUT.GENDER.PLACEHOLDER' | translate}}">
+                  <mat-option>--</mat-option>
+                  <mat-option *ngFor="let status of this.constantList.GENDER_CRITIRIA" [value]="status.value">
+                    {{status.name}}
+                  </mat-option>
+                </mat-select>
+
+                <mat-error *ngIf="this.formGroup.controls.gender.invalid">
+                  {{getErrorMessage('gender')}}
+                </mat-error>
+              </mat-form-field>
+
+              <!-- AGE -->
+              <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                    <!--AGE FROM-->
+                  <mat-form-field fxFlex="50" class="asterisk mat-form-field">
+                      <mat-select formControlName="from_age" placeholder="{{'INPUT.AGE_FROM.PLACEHOLDER' | translate}}"
+                      (selectionChange)="populateAgeTo($event);">
+                        <mat-option>--</mat-option>
+                        <mat-option *ngFor="let age of this.constantList.AGE_LIMIT" [value]="age.value">
+                          {{age.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="this.formGroup.controls.from_age.invalid">
+                        {{getErrorMessage('from_age')}}
+                      </mat-error>
+                    </mat-form-field>
+              
+                     <!--AGE TO-->
+                  <mat-form-field fxFlex="50" class="asterisk mat-form-field" fxLayoutGap="20px">
+                      <mat-select formControlName="to_age" placeholder="{{'INPUT.AGE_TO.PLACEHOLDER' | translate}}">
+                        <mat-option>--</mat-option>
+                        <mat-option *ngFor="let age of this.constantList.AGE_LIMIT" [value]="age.value" [disabled]="this.formGroup.controls.from_age.value > age.value ">
+                          {{age.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="this.formGroup.controls.to_age.invalid">
+                        {{getErrorMessage('to_age')}}
+                      </mat-error>
+                    </mat-form-field>
+                </div>
+              
+              <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                <button type="button" mat-raised-button matStepperNext color="primary">
+                  {{'TEXT.CONTINUE' | translate}}
+                </button>
+                <button type="button" color="warn" mat-button matStepperPrevious>
+                  {{'TEXT.BACK_STEP' | translate}}
+                </button>
+              </div>
+            </div>
+          </mat-step>
+
+          <mat-step label="{{'TEXT.TIMING_LABEL' | translate}}">  
+            <div fxLayout="column" fxLayoutAlign="space-between stretch" fxLayoutGap="5px">
+              <!-- START DATE -->
+              <mat-form-field fxFlex="100">
+                <input matInput formControlName="start_date" (focus)="start_date.open()" formate="YYYY/MM/DD" [matDatepicker]="start_date" placeholder="{{'INPUT.START_DATE.LABEL' | translate}}">
+                <mat-datepicker-toggle matSuffix [for]="start_date"></mat-datepicker-toggle>
+                <mat-datepicker #start_date></mat-datepicker>
+                <mat-error *ngIf="this.formGroup.controls.start_date.invalid">
+                  {{getErrorMessage('start_date')}}
+                </mat-error>
+              </mat-form-field>
+              <div fxLayout="row" fxLayoutAlign="start center" fxFlex="100" fxLayoutGap="20px">
+                <mat-radio-group formControlName="timingRadioSelector" fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="30px">
+                  <mat-radio-button class="timing-radio-button" color="primary" value="1">{{'TEXT.CHOOSE_DATE' | translate}}</mat-radio-button>
+                  <mat-radio-button class="timing-radio-button" color="primary" value="2">{{'TEXT.NUMBER_OF_IMPRESSIONS' |
+                    translate}}</mat-radio-button>
+                </mat-radio-group>
+                <!-- END DATE -->
+                <div fxLayout="column" fxLayoutAlign="center start">
+                  <mat-form-field>
+                    <input matInput formControlName="end_date" [matDatepicker]="end_date" (focus)="end_date.open()" placeholder="{{'INPUT.END_DATE.LABEL' | translate}}">
+                    <mat-datepicker-toggle matSuffix [for]="end_date"></mat-datepicker-toggle>
+                    <mat-datepicker #end_date></mat-datepicker>
+                    <mat-error *ngIf="this.formGroup.controls.end_date.invalid">
+                      {{getErrorMessage('end_date')}}
+                    </mat-error>
+                  </mat-form-field>
+            
+                  <!-- NUMBER OF IMPRESSIONS -->
+                  <div fxLayout="column" fxLayoutAlign="start start" >
+                    <div>
+                        <mat-slider thumbLabel formControlName="impressionValueControl"  color="primary"
+                        tickInterval="1" min="0" max="100000"></mat-slider>
+                      <strong>{{this.impressionValue}}</strong>
+                    </div>
+                   
+                  </div>
+                  <div *ngIf="isCampaignImpressionType && this.isEditMode() && !this.baseModel.end_date">
+                      <strong>{{this.baseModel.impressions_used}}</strong>  Used out of  <strong>{{this.baseModel.impressions_remaining}}</strong>
+                  </div>
+                
+                </div>
+              </div>
+            </div>
+          </mat-step>
+
+
+        </mat-vertical-stepper>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+      <mat-card-actions>
+        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+          <button mat-raised-button type="button" [attr.aria-label]="'BUTTONS.SAVE' | translate" (click)="onSubmit()"
+            class="submit-button" [disabled]="formGroup.invalid || !this.baseModel.brand.business_reference_id || !this.imageValidates || (!this.formGroup.controls.impressionValueControl.disabled && this.impressionValue<1)">
+            {{'BUTTONS.SAVE' | translate}}
+          </button>
+        </div>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+</div>

@@ -1,0 +1,119 @@
+<skrambler-table-filters [filters]="filters" (searchClick)="onSearchClick($event);"
+                       [fxHide]="(dataSource.loading$ | async) || filters.length === 0">
+</skrambler-table-filters>
+<div class="spinner-container" fxLayout="column" fxFill *ngIf="dataSource.loading$ | async" fxLayoutAlign="center center">
+  <mat-spinner></mat-spinner>
+</div>
+<div [fxHide]="dataSource.loading$ | async" class="table-container mt-12 h-100-p" fxLayout="column" fxLayoutAlign="start stretch"
+  [class.table-shadow]="true">
+  <mat-table #table [dataSource]="dataSource">
+    <ng-container *ngFor="let column of displayedColumnsViewArray;" [matColumnDef]="column.key">
+      <mat-header-cell *matHeaderCellDef (click)="sortTable(column)" class="edit-icon" >
+        <span class="mobile-label">{{column.value}}</span>
+        <mat-icon *ngIf="column.sortable && column.type == 'text'" matSuffix class="sorting-icon">
+          {{column.key === sortKey && sortOrder === constantList.DEFAULT_SORT_ORDER ? 'arrow_downward' :
+          'arrow_upward'}}
+        </mat-icon>
+      </mat-header-cell>
+
+      <mat-cell *matCellDef="let element" [ngSwitch]="column.type" class="edit-icon">
+
+        <button *ngSwitchCase="'button'" mat-stroked-button [color]="column.color ? column.color : 'primary'" (click)="emitEvent(element, column)"
+          [ngClass]="column.icon ? 'mat-icon-button' : ''">
+          <span *ngIf="!column.icon">
+            {{column.callback ? constructNestedObject(element, column) : column.value}}
+          </span>
+          <mat-icon *ngIf="column.icon" matSuffix matTooltip="{{column.callback ? constructNestedObject(element, column) : column.value}}"
+            matTooltipPosition="above">
+            {{column.icon}}
+          </mat-icon>
+        </button>
+
+        <span *ngSwitchCase="'text'" >
+          <span>
+          {{constructNestedObject(element, column)}}
+            </span>
+        </span>
+
+        <span *ngSwitchCase="'tooltip'" [class]="column.class ? column.class : ''" [matTooltip]="column.tooltip ? constructNestedObject(element, column) : ''">
+          {{constructNestedObject(element, column)}}
+        </span>
+        <span *ngSwitchCase="'full_name'" [class]="column.class ? column.class : ''"  >
+          {{constructCancatinateColumn(element)}}
+        </span>
+
+        <span *ngSwitchCase="'offer_customer_fullName'" [class]="column.class ? column.class : ''">
+          {{constructOfferUserName(element)}}
+        </span>
+
+        <span *ngSwitchCase="'date_of_birth'" [class]="column.class ? column.class : ''">
+          {{constructDateOfBirth(element)}}
+        </span>
+
+        <span *ngSwitchCase="'customer_points'" [class]="column.class ? column.class : ''">
+          {{constructCustomerPoints(element)}}
+        </span>
+
+        <span *ngSwitchCase="'category_listing'" [class]="column.class ? column.class : ''">
+          {{constructCategoriesNestedArrayObject(element, column)}}
+        </span>
+
+        <span *ngSwitchCase="'user_full_name'" [class]="column.class ? column.class : ''">
+          {{constructUserFullName(element)}}
+        </span>
+
+        <span *ngSwitchCase="'branch_name'" [class]="column.class ? column.class : ''">
+          {{constructBranchesNestedArrayObjects(element, column)}}
+        </span>
+
+        <span *ngSwitchCase="'impressions_left'" [class]="column.class ? column.class : ''">
+          {{constructImpressionsForCampaign(element)}}
+        </span>
+
+        <span *ngSwitchCase="'yet_to_be_redemmed_offers'" [class]="column.class ? column.class : ''">
+          {{constructYetToBeRedemmedOffers(element)}}
+        </span>
+
+        <span *ngSwitchCase="'icon'" [class]="column.class ? column.class : ''">
+          <mat-icon *ngIf="element.ambassador==1">{{column.key}}</mat-icon>
+        </span>
+
+        <span *ngSwitchCase="'age'" [class]="column.class ? column.class : ''">
+          {{constructAge(element)}}
+        </span>
+
+        <span *ngSwitchCase="'google_map'" [class]="column.class ? column.class : ''">
+          <a class="location-listing-link" href="{{constructLocationObject(element, column)}}" target="_blank">{{column.value}}</a>
+        </span>
+
+        <div *ngSwitchCase="'link'">
+          <a *ngIf="!column.href" mat-button [color]="column.color ? column.color : 'primary'" (click)="emitLinkEvent(element, column)"
+            [ngClass]="column.icon ? 'mat-icon-button' : ''">
+            <span *ngIf="!column.icon">
+              {{column.callback ? constructNestedObject(element, column) : column.value}}
+            </span>
+            <mat-icon *ngIf="column.icon" matSuffix matTooltip="{{column.callback ? constructNestedObject(element, column) : column.value}}"
+              matTooltipPosition="above">
+              {{column.icon}}
+            </mat-icon>
+          </a>
+          <a *ngIf="column.href" href="_blank" [routerLink]="[column.currentPath,element.business_reference_id]">
+            <mat-icon *ngIf="column.icon" matSuffix matTooltip="{{column.callback ? constructNestedObject(element, column) : column.value}}"
+              matTooltipPosition="above">
+              {{column.icon}}
+            </mat-icon>
+          </a>
+        </div>
+
+        <img *ngSwitchCase="'image'" class="image" [src]="constructImage(element,column)" />
+
+      </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns" class="edit-z-index"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+
+  <mat-paginator #paginator [fxHide]="dataSource.loading$ | async" [pageSize]="dataSource.pageSize" (page)="pageChanged($event)"
+    [length]="dataSource.totalNumberOfPages" [showFirstLastButtons]="true">
+  </mat-paginator>
+</div>

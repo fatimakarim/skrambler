@@ -1,0 +1,24 @@
+<div class="page-layout blank p-24 mb-50" skramblerPerfectScrollbar fxLayout="column" fxLayoutAlign="space-around stretch">
+  <div fxLayout="column" fxLayoutAlign="space-around stretch">
+    <skrambler-header title="{{'TEXT.LIST_TITLE' | translate}}" [allowAction]="true" linkText="{{'TEXT.ADD_BRANCH_TITLE' | translate}}"
+    [link]="[routeList.BRANCH_CREATE,this.brandId].join('/')"></skrambler-header>
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <mat-form-field fxFlex="45%" fxFlexFill>
+        <input type="text" placeholder="{{'TEXT.SEARCH' | translate}}" matInput [formControl]="searchBranch">
+      </mat-form-field>
+      <mat-form-field fxFlex="45%" fxFlexFill>
+        <mat-select placeholder="{{'TEXT.SELECT_STATUS' | translate}}" (selectionChange)="onStatusChange($event)">
+          <mat-option>--</mat-option>
+          <mat-option *ngFor="let status of this.constantList.STATUSES" [value]="status.value">
+            {{status.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="table-overview-container">
+    <skrambler-resource-table [displayedColumnsViewArray]="displayedColumnsViewArray"
+      [endPointConfiguration]="endPointConfiguration" [triggerChange]="deletedItemId" (elementClick)="onClick($event)">
+    </skrambler-resource-table>
+  </div>
+</div>

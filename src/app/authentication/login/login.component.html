@@ -1,0 +1,148 @@
+<div id="login"
+     class="h-100-p"
+     fxLayout="row"
+     fxLayout.sm="column"
+     fxLayout.xs="column"
+     fxLayoutAlign="center stretch"
+     fxFlexFill
+     feedPerfectScrollbar>
+
+  <div class="login-form-wrapper" fxLayout="column" fxFlexAlign="stretch" fxLayoutAlign="start center">
+    <div class="logo">
+      <img src="../assets/images/logos/Skrambler-logo.png">
+    </div>
+    <!-- login form -->
+    <div *ngIf="showLoginForm">
+      <div class="login-form noshadow"
+           [@animate]="{value:'*',params:{duration:'300ms',y:'100px'}}">
+           <form name="formGroup" [formGroup]="formGroup" (ngSubmit)="onSubmit()" novalidate>
+              <mat-form-field>
+                <input matInput placeholder="Email" formControlName="email" color="accent">
+                <mat-error *ngIf="this.formGroup.controls.email.invalid">{{getEmailErrorMessage('email')}}</mat-error>
+                <mat-icon matSuffix
+                          *ngIf="this.formGroup.controls.email.valid">
+                  <i class="material-icons green-900-fg">check</i></mat-icon>
+              </mat-form-field>
+    
+              <mat-form-field>
+                <input matInput [type]="!this.IsPassVisible ? 'password' : 'text'" placeholder="Password" formControlName="password" color="accent">
+                <mat-error *ngIf="this.formGroup.controls.password.invalid">
+                  {{getErrorMessage('password')}}
+                </mat-error>
+                <mat-icon matSuffix class="cursor-pointer" (click)="this.IsPassVisible = !this.IsPassVisible">{{IsPassVisible ? 'visibility' :
+                  'visibility_off'}}
+                </mat-icon>
+                <mat-icon matSuffix *ngIf="this.formGroup.controls.password.valid"><i
+                  class="material-icons green-900-fg">check</i></mat-icon>
+              </mat-form-field>
+    
+              <div class="remember-forgot-password" fxLayout="row" fxLayout.xs="column"
+                   fxLayoutAlign="space-between center">
+                <mat-checkbox class="remember-me" aria-label="Remember Me" [checked]="IsChecked"  formControlName="remember_me" color="accent">
+                  {{'TEXT.REMEMBER_ME' | translate}}
+                </mat-checkbox>
+    
+                <a class="forgot-password" (click)="forgotPasswordClicked()">
+                  {{'BUTTONS.FORGOT_PASSWORD' | translate}} 
+                </a>
+              </div>
+    
+              <button mat-raised-button color="accent" class="submit-button" aria-label="LOG IN"
+                      [disabled]="formGroup.invalid">
+                {{'BUTTONS.LOGIN' | translate}}
+              </button>
+    
+            </form>
+      </div>
+    </div>
+    <!-- forgot password form -->
+    <div *ngIf="showForgotForm && !showRessetForm">
+      <div class="forgot-password-form"
+           [@animate]="{value:'*',params:{duration:'300ms',y:'100px'}}">
+        <form name="formGroup" [formGroup]="passwordFormGroup" (ngSubmit)="onSubmitForgetPass()" novalidate>
+
+          <mat-card class="forgot-password-card">
+            <mat-card-header>
+              <button color="white"  (click)="this.showForgotForm=false;this.showLoginForm=true;" class="mat-headline back-button">
+                <mat-icon >arrow_back</mat-icon>
+              </button>
+              <span class="mat-headline" color="white">{{'TEXT.FORGOT_PASSWORD_TITLE' | translate}}</span>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-form-field>
+                <input matInput placeholder="Email" formControlName="email">
+                <mat-error *ngIf="this.passwordFormGroup.controls.email.invalid">{{getEmailErrorMessage('email')}}
+                </mat-error>
+                <mat-icon matSuffix
+                          *ngIf="this.passwordFormGroup.controls.email.valid">
+                  <i class="material-icons green-900-fg">check</i></mat-icon>
+              </mat-form-field>
+            </mat-card-content>
+            <button mat-raised-button class="submit-button feed-black-button" aria-label="LOG IN"
+                    [disabled]="passwordFormGroup.invalid">
+              {{'BUTTONS.REQUEST_FORGOT_PASSWORD' | translate}}
+            </button>
+          </mat-card>
+        </form>
+      </div>
+    </div>
+    <!-- Resset password form -->
+    <div *ngIf="showRessetForm">
+      <div class="forgot-password-form"
+           [@animate]="{value:'*',params:{duration:'300ms',y:'100px'}}">
+        <form name="formGroup" [formGroup]="ressetPasswordFormGroup" (ngSubmit)="onSubmitResetPass()" novalidate>
+
+          <mat-card class="forgot-password-card">
+            <mat-card-header>
+              <button (click)="this.showRessetForm = false; this.showForgotForm=true;" class="mat-headline back-button">
+                <mat-icon>arrow_back</mat-icon>
+              </button>
+              <span class="mat-headline">{{'TEXT.RESSET_PASSWORD_TITLE' | translate}}</span>
+            </mat-card-header>
+            <mat-divider></mat-divider>
+            <mat-card-content class="mt-0">
+              <mat-form-field>
+                <input matInput placeholder="Email" formControlName="email">
+                <mat-error *ngIf="this.passwordFormGroup.controls.email.invalid">{{getEmailErrorMessage('email')}}
+                </mat-error>
+                <mat-icon matSuffix
+                          *ngIf="this.ressetPasswordFormGroup.controls.email.valid">
+                  <i class="material-icons green-900-fg">check</i></mat-icon>
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="{{'INPUT.NEW_PASSWORD.PLACEHOLDER' | translate}}"
+                       formControlName="new_password">
+                <mat-error *ngIf="this.ressetPasswordFormGroup.controls.new_password.invalid">
+                  {{getResetFormErrorMessage('new_password')}}
+                </mat-error>
+               
+              </mat-form-field>
+              <mat-form-field>
+                  <input matInput placeholder="{{'INPUT.CONFIRM_PASSWORD.PLACEHOLDER' | translate}}"
+                         formControlName="confirm_password">
+                  <mat-error *ngIf="this.ressetPasswordFormGroup.controls.confirm_password.invalid">
+                    {{getResetFormErrorMessage('confirm_password')}}
+                  </mat-error>
+                 
+                </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="{{'INPUT.CODE.PLACEHOLDER' | translate}}" formControlName="code">
+                <mat-error *ngIf="this.ressetPasswordFormGroup.controls.code.required">
+                  {{getResetFormErrorMessage('code')}}
+                </mat-error>
+              </mat-form-field>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-raised-button class="submit-button feed-black-button" aria-label="LOG IN"
+                      [disabled]="ressetPasswordFormGroup.invalid">
+                {{'BUTTONS.REQUEST_FORGOT_PASSWORD' | translate}}
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+</div>

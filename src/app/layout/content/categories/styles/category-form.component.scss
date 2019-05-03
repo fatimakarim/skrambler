@@ -1,0 +1,100 @@
+/* Structure */
+
+@import "../../../../theme-core/scss/skrambler.scss";
+:host {
+  ::ng-deep {
+    .mat-basic {
+      .mat-button-wrapper {
+        color: #000000;
+      }
+    }
+  }
+
+  .images-row {
+    display: flex;
+    display: -ms-flexbox;
+    /* IE10 */
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    padding: 0 4px;
+  }
+  /* Create four equal columns that sits next to each other */
+  .images-column {
+    position: relative;
+    -ms-flex: 25%;
+    /* IE10 */
+    flex: 25%;
+    max-width: 150px;
+    max-height: 150px;
+
+    img {
+      vertical-align: middle;
+      width: 100%;
+      heigth: 100%;
+    }
+
+    mat-icon {
+      position: absolute;
+      transform: translate(-45%, -45%);
+      display: none;
+      top: 40%;
+      left: 40%;
+      font-size: 3em;
+    }
+
+    .icon-cancel {
+      font-size: 3em;
+      top: 50%;
+      left: 25%;
+    }
+  }
+
+  .images-column:hover {
+    img,
+    mat-icon {
+      cursor: pointer;
+      display: block;
+      z-index: 500;
+      top: 40%;
+      left: 40%;
+      font-size: 3em;
+    }
+    .icon-cancel {
+      cursor: pointer;
+      font-size: 1em;
+      top: 50%;
+      left: 20%;
+    }
+  }
+
+  /* Responsive layout - makes a two column-layout instead of four columns */
+  @media screen and (max-width: 800px) {
+    .images-column {
+      -ms-flex: 50%;
+      flex: 50%;
+      max-width: 100px;
+      max-height: 100px;
+    }
+  }
+
+  /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+  @media screen and (max-width: 600px) {
+    .images-column {
+      -ms-flex: 100%;
+      flex: 100%;
+      max-width: 150px;
+      max-height: 150px;
+    }
+  }
+
+  mat-card-header {
+    img {
+      max-width: 10%;
+      padding: 1%;
+    }
+  }
+
+  .mt-5 {
+    margin-top: 5px;
+  }
+}

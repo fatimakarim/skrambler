@@ -1,0 +1,7 @@
+:host{
+    ::ng-deep{
+        .mat-row {
+            max-height: 85px !important;
+          }
+    }
+}

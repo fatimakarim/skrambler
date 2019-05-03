@@ -1,0 +1,16 @@
+<mat-form-field fxLayoutGap="10px" fxLayout="column" fxLayoutAlign="space-around stretch" >
+  <div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="10px">
+    <div>
+      <input type="text" placeholder="{{placeHolderText}}" matInput [formControl]="brand"
+        [matAutocomplete]="auto_brand" required>
+      <mat-autocomplete #auto_brand="matAutocomplete" (optionSelected)="onBrandChange($event)">
+        <mat-option *ngFor="let brand of filteredBrands | async" [value]="brand.name">
+          {{brand.name}}
+        </mat-option>
+      </mat-autocomplete>
+    </div>
+  </div>
+  <mat-error *ngIf="this.brand.invalid">
+      {{getErrorMessage('brand')}}
+  </mat-error>
+</mat-form-field>

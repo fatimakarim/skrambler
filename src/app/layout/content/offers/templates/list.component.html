@@ -1,0 +1,32 @@
+<div class="page-layout blank p-24 mb-50" skramblerPerfectScrollbar fxLayout="column" fxLayoutAlign="space-around stretch">
+  <div fxLayout="column" fxLayoutAlign="space-around stretch">
+    <skrambler-header title="{{'TEXT.OFFER_LIST_TITLE' | translate}}" linkText="{{'TEXT.ADD_OFFER_TITLE' | translate}}"
+      [link]="[routeList.OFFERS_CREATE,this.brandId].join('/')"></skrambler-header>
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <mat-form-field fxFlex="30%" fxFlexFill>
+        <input type="text" placeholder="{{'TEXT.SEARCH' | translate}}" matInput [formControl]="searchBranch">
+      </mat-form-field>
+      <mat-form-field fxFlex="30%" fxFlexFill>
+        <mat-select placeholder="{{'TEXT.SELECT_STATUS' | translate}}" (selectionChange)="onStatusChange($event)">
+          <mat-option>--</mat-option>
+          <mat-option *ngFor="let status of this.constantList.STATUSES" [value]="status.value">
+            {{status.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <!-- OFFER TYPES-->
+      <mat-form-field fxFlex="30%" fxFlexFill >
+        <mat-select placeholder="{{'TEXT.OFFER_KIND' | translate}}"  (selectionChange)="onOfferChange($event)">
+          <mat-option>--</mat-option>
+          <mat-option *ngFor="let offer of this.constantList.KIND_OFFER_TYPES" [value]="offer.id">
+            {{offer.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="table-overview-container">
+      <skrambler-resource-table  [displayedColumnsViewArray]="displayedColumnsViewArray"
+        [endPointConfiguration]="endPointConfiguration" [triggerChange]="deletedItemId" (elementClick)="onClick($event)">
+      </skrambler-resource-table>
+    </div>
+  </div>

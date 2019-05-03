@@ -1,0 +1,68 @@
+<mat-sidenav-container>
+
+  <div id="skrambler-main-content">
+
+    <!-- TOOLBAR: Above -->
+    <ng-container *ngIf="skramblerSettings.layout.toolbar === 'above'">
+      <skrambler-toolbar class="above" [ngClass]="skramblerSettings.colorClasses.toolbar"></skrambler-toolbar>
+    </ng-container>
+    <!-- / TOOLBAR: Above -->
+
+    <!-- NAVBAR: Top -->
+    <skrambler-navbar-horizontal class="top-navbar" fxHide fxShow.gt-md
+                            [ngClass]="skramblerSettings.colorClasses.navbarTop"
+                            *ngIf="skramblerSettings.layout.navigation === 'top'">
+    </skrambler-navbar-horizontal>
+    <!-- / NAVBAR: Top -->
+
+    <div id="wrapper">
+
+      <!-- NAVBAR: Left -->
+      <skrambler-navbar-vertical [folded]="skramblerSettings.layout.navigationFolded"
+                            class="left-navbar"
+                            [ngClass]="skramblerSettings.colorClasses.navbar"
+                            *ngIf="skramblerSettings.layout.navigation === 'left' || skramblerSettings.layout.navigation === 'top'">
+      </skrambler-navbar-vertical>
+      <!-- / NAVBAR: Left -->
+
+      <div class="content-wrapper">
+        <!-- TOOLBAR: Below -->
+        <ng-container *ngIf="skramblerSettings.layout.toolbar === 'below'">
+          <skrambler-toolbar class="below" [ngClass]="skramblerSettings.colorClasses.toolbar"></skrambler-toolbar>
+        </ng-container>
+        <!-- / TOOLBAR: Below -->
+
+        <router-outlet></router-outlet>
+        <!-- FOOTER: Below -->
+        <!-- <ng-container *ngIf="skramblerSettings.layout.footer === 'below'">
+          <skrambler-footer class="below" [ngClass]="skramblerSettings.colorClasses.footer"></skrambler-footer>
+        </ng-container> -->
+        <!-- / FOOTER: Below -->
+
+      </div>
+
+      <!-- NAVBAR: Right -->
+      <skrambler-navbar-vertical [folded]="skramblerSettings.layout.navigationFolded"
+                            class="right-navbar"
+                            [ngClass]="skramblerSettings.colorClasses.navbar"
+                            *ngIf="skramblerSettings.layout.navigation === 'right'">
+      </skrambler-navbar-vertical>
+      <!-- / NAVBAR: Right -->
+
+    </div>
+
+    <!-- FOOTER: Above -->
+    <!-- <ng-container *ngIf="skramblerSettings.layout.footer === 'above'">
+      <skrambler-footer class="above" [ngClass]="skramblerSettings.colorClasses.footer"></skrambler-footer>
+    </ng-container> -->
+    <!-- FOOTER: Above -->
+
+  </div>
+
+  <!-- QUICK PANEL -->
+  <!-- <mat-sidenav skramblerMatSidenavHelper="quick-panel" position="end">
+    <skrambler-quick-panel></skrambler-quick-panel>
+  </mat-sidenav> -->
+  <!-- / QUICK PANEL -->
+
+</mat-sidenav-container>

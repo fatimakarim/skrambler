@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<div mat-dialog-content>
+  {{data.text}}
+</div>
+
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="end center">
+  <button mat-button class="submit-button" aria-label="Cancel" (click)="onNoClick()">
+    NO
+  </button>
+  <button mat-button class="submit-button" aria-label="LOG IN" (click)="onYesClick()">
+    YES
+  </button>
+</div>

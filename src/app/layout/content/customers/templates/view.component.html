@@ -1,0 +1,179 @@
+<div class="page-layout carded fullwidth p-24 mb-50" [ngClass.lt-sm]="['w-100-p']" skramblerPerfectScrollbar>
+  <mat-card>
+    <mat-card-header>
+      <button class="mat-headline back-button mt-4" (click)="goTo(routeList.CUSTOMER_HOME);">
+
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div fxLayout="row" fxFill fxFlex="70%" class="pl-24 pr-24">
+        <h2 class="mat-headline" fxFlex="50" fxLayoutAlign="stretch" [innerHtml]="pageTitle"></h2>
+      </div>
+      <div fxLayout="row" fxFlex="30%" fxLayoutAlign="end center">
+        <button mat-raised-button color="primary" (click)="enableEditing();">{{this.labelEnablingButton}}</button>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content class="pt-20">
+      <form name="formGroup" [formGroup]="formGroup" novalidate>
+        <div fxLayout="column" fxLayoutAlign="space-between stretch" fxLayoutGap="10px">
+          <div fxlLayout="row" fxLayoutAlign="space-between center">
+
+            <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex="20%">
+              <div fxLayout="column" fxLayoutAlign="center center" >
+              <img mat-card-image class="rounded" *ngIf="!this.baseModel.ProfileImageDataURI && !this.baseModel.ProfileImagePath"
+                src="assets/images/customer/dd.png">
+              <img *ngIf="this.baseModel.ProfileImageDataURI" mat-card-image class="rounded" [src]="this.baseModel.ProfileImageDataURI"  />
+
+              <img *ngIf="this.baseModel.ProfileImagePath" mat-card-image class="rounded"  src="{{this.baseModel.ProfileImagePath}}"  />
+
+
+
+            <button type="button" mat-raised-button type="button" class="mt-4 feed-black-button" (click)="openImageDialog(this.constantList.PROFILE_IMAGE_TYPE)">
+              {{'TEXT.IMAGE_BUTTON' | translate}}
+            </button>
+              <span>({{'TEXT.MAX_FILE_WARN' | translate}})</span>
+              </div>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="space-between start" fxFlex="55%">
+                <div fxLayout="row" fxLayoutAlign="space-around center">
+                    <mat-checkbox color="primary" formControlName="ambassador">Ambassador</mat-checkbox>
+                    <img class="ambassador-image" src="../../../../../assets/icons/ambassadar-flag.svg">
+  
+                  </div>
+                <mat-form-field>
+                    <mat-label>{{'INPUT.REFERRAL_CODE.LABEL' | translate}}</mat-label>
+                    <input matInput type="text" maxlength="40" formControlName="referral_code" />
+                    <input matInput type="text" class="hiddenField" formControlName="business_reference_id">
+                  </mat-form-field>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="end center" fxFlex="30%">
+                <mat-card>
+                    Points
+                    <mat-card>{{this.baseModel.points}}</mat-card>
+                  </mat-card>
+            </div>
+          
+          </div>
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <mat-form-field fxFlex="45%">
+              <mat-label>{{'INPUT.FIRST_NAME.LABEL' | translate}}</mat-label>
+              <input matInput type="text" maxlength="40" formControlName="first_name" required />
+              <mat-error *ngIf="formGroup.controls.first_name.invalid">
+                {{getErrorMessage('first_name')}}
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field fxFlex="45%">
+              <mat-label>{{'INPUT.LAST_NAME.LABEL' | translate}}</mat-label>
+              <input matInput type="text" maxlength="40" formControlName="last_name" />
+            </mat-form-field>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <mat-form-field fxFlex="45%">
+              <mat-select placeholder="{{'INPUT.GENDER.LABEL' | translate}}" formControlName="gender" required>
+                <mat-option>--</mat-option>
+                <mat-option *ngFor="let gender of this.constantList.GENDER" [value]="gender.value">
+                  {{gender.name}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="formGroup.controls.gender.invalid">
+                {{getErrorMessage('gender')}}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="45%">
+              <mat-label>{{'INPUT.DOB.LABEL' | translate}}</mat-label>
+              <input matInput type="date" maxlength="40" formControlName="dob" required />
+              <mat-error *ngIf="formGroup.controls.dob.invalid">
+                {{getErrorMessage('dob')}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <mat-form-field fxFlex="45%">
+              <mat-label>{{'INPUT.EMAIL.LABEL' | translate}}</mat-label>
+              <input matInput type="text" maxlength="40" formControlName="email" required />
+            </mat-form-field>
+
+            <mat-form-field fxFlex="45%">
+              <mat-label>{{'INPUT.SCHOOL.LABEL' | translate}}</mat-label>
+              <input matInput type="text" maxlength="40" formControlName="school" required />
+              <mat-error *ngIf="formGroup.controls.school.invalid">
+                {{getErrorMessage('school')}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+
+            <mat-form-field fxFlex="45%">
+              <mat-label>{{'INPUT.PROMO_CODE.LABEL' | translate}}</mat-label>
+              <input matInput type="text" maxlength="40" formControlName="promo_code" />
+            </mat-form-field>
+
+            <mat-form-field fxFlex="45%">
+              <mat-select placeholder="{{'INPUT.STATUS.LABEL' | translate}}" formControlName="status" required>
+                <mat-option *ngFor="let status of this.constantList.CUSTOMER_STATUSES" [value]="status.value" [disabled]="baseModel.status === 1 && (status.value === 5 || status.value === 4)">
+                  {{status.name}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="formGroup.controls.status.invalid">
+                {{getErrorMessage('status')}}
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+          <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="20px">
+            <!-- FRONT IMAGE NATIONAL CARD-->
+            <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px">
+              <strong>{{'INPUT.NATIONAL_CARD_FRONT.LABEL' | translate}}</strong>
+              <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                <div>
+                  <img [src]="this.baseModel.NationalCardFrontImageDataURI" *ngIf="this.baseModel.NationalCardFrontImageDataURI" />
+                  <img src="{{this.baseModel.NationalCardFrontImagePath}}" *ngIf="this.baseModel.NationalCardFrontImagePath" />
+                </div>
+                <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px">
+                  <button type="button" mat-raised-button type="button" class="mt-4 feed-black-button" (click)="openImageDialog(this.constantList.NATIONAL_CARD_FRONT_IMAGE_TYPE)">
+                    {{'TEXT.IMAGE_BUTTON' | translate}}
+                  </button>
+                  <span>({{'TEXT.MAX_FILE_WARN' | translate}})</span>
+                </div>
+              </div>
+            </div>
+            <!-- BACK IMAGE NATIONAL CARD-->
+            <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px">
+              <strong>{{'INPUT.NATIONAL_CARD_BACK.LABEL' | translate}}</strong>
+              <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+                <div>
+                  <img  [src]="this.baseModel.NationalCardBACKImageDataURI" *ngIf="this.baseModel.NationalCardBACKImageDataURI" />
+                  <img  src="{{this.baseModel.NationalCardBackImagePath}}" *ngIf="this.baseModel.NationalCardBackImagePath" />
+                </div>
+                <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px">
+                  <button type="button" mat-raised-button type="button" class="mt-4 feed-black-button" (click)="openImageDialog(this.constantList.NATIONAL_CARD_BACK_IMAGE_TYPE)">
+                    {{'TEXT.IMAGE_BUTTON' | translate}}
+                  </button>
+                  <span>({{'TEXT.MAX_FILE_WARN' | translate}})</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </mat-card-content>
+    <mat-divider></mat-divider>
+    <mat-card-actions>
+      <div fxLayout="column" fxLayoutAlign="space-between stretch">
+        <div ffxLayout="row" fxLayoutAlign="end center" fxLayoutGap="20px">
+          <button fxFlex="15%" [disabled]="!formGroup.valid" mat-raised-button color="primary" (click)="onSubmit();">{{'BUTTONS.SAVE'
+            | translate}}</button>
+          <button fxFlex="15%"  (click)="goTo(routeList.CUSTOMER_HOME);"  mat-button color="primary">{{'BUTTONS.CANCEL' |
+            translate}}</button>
+
+        </div>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+</div>

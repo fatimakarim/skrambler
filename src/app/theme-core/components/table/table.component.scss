@@ -1,0 +1,74 @@
+:host {
+
+}
+
+.table-container {
+  height: 600px;
+  background-color: white;
+  width:100%;
+  overflow: auto;
+}
+
+.table-shadow {
+  box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+/*.edit-icon:last-child {
+  position: relative!important;
+  right:75px;
+  z-index:1;
+}*/
+.edit-z-index {
+  z-index:2;
+}
+.mat-row,.mat-header-row {
+  min-width: 1200px;
+  width:100%;
+  max-height: 50px;
+}
+
+.mat-header-row {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  background-color: inherit;
+}
+.filters {
+  mat-form-field {
+    margin-right: 5rem;
+  }
+}
+
+.sorting-icon {
+  font-size: 16px !important;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  position: relative !important;
+}
+
+::ng-deep mat-table {
+  img.image {
+    max-width: 8rem;
+    min-width: 3rem;
+    padding: 1rem;
+  }
+}
+
+
+mat-cell:not(:first-child),
+mat-header-cell:not(:first-child),
+mat-footer-cell:not(:first-child) {
+  padding: 10px;
+}
+
+/*mat-cell:last-child,
+mat-header-cell:last-child,
+mat-footer-cell:last-child {
+  max-width: 60px;
+}*/
+
+mat-cell *, mat-header-cell *, mat-footer-cell * {
+  word-break: break-all;
+}

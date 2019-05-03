@@ -1,0 +1,49 @@
+<div class="page-layout blank p-24 mb-50" skramblerPerfectScrollbar fxLayout="column" fxLayoutAlign="space-around stretch">
+  <div fxLayout="column" fxLayoutAlign="space-around stretch" fxLayoutGap="20px">
+    <div fxLayout="row" fxLayoutAlign="end center">
+    <button fxFlex="23%"  mat-raised-button color="primary" (click)="onExport();">{{'BUTTONS.EXPORT' | translate}}</button>
+  </div>
+<!--<div fxLayout="column" fxLayoutAlign="space-around stretch">-->
+    <!--<skrambler-header title="{{'TEXT.LIST_TITLE' | translate}}"></skrambler-header>-->
+    <!--<div fxLayout="row" fxLayoutAlign="space-between center">-->
+      <!--<mat-form-field fxFlex="20%" fxFlexFill>-->
+        <!--<mat-select placeholder="{{'TEXT.SELECT_STATUS' | translate}}" (selectionChange)="onStatusChange($event)">-->
+          <!--<mat-option>&#45;&#45;</mat-option>-->
+          <!--<mat-option *ngFor="let status of this.constantList.CUSTOMER_STATUSES" [value]="status.value">-->
+            <!--{{status.name}}-->
+          <!--</mat-option>-->
+        <!--</mat-select>-->
+      <!--</mat-form-field>-->
+      <!--<mat-form-field fxFlex="20%" fxFlexFill>-->
+        <!--<mat-select placeholder="{{'TEXT.GENDER' | translate}}" (selectionChange)="onGenderChange($event)">-->
+          <!--<mat-option>&#45;&#45;</mat-option>-->
+          <!--<mat-option *ngFor="let gender of this.constantList.GENDER" [value]="gender.value">-->
+            <!--{{gender.name}}-->
+          <!--</mat-option>-->
+        <!--</mat-select>-->
+      <!--</mat-form-field>-->
+      <!--<mat-form-field fxFlex="20%" fxFlexFill>-->
+        <!--<mat-select placeholder="{{'TEXT.AGE_RANGE' | translate}}" (selectionChange)="onAgeRangeChange($event)">-->
+          <!--<mat-option>&#45;&#45;</mat-option>-->
+          <!--<mat-option *ngFor="let age of this.constantList.AGE_LIMIT" [value]="age.value">-->
+            <!--{{age.viewValue}}-->
+          <!--</mat-option>-->
+        <!--</mat-select>-->
+      <!--</mat-form-field>-->
+      <!--<mat-form-field fxFlex="20%" fxFlexFill>-->
+        <!--<mat-select placeholder="{{'TEXT.USER_TYPE' | translate}}" (selectionChange)="onUserTypeChange($event)">-->
+          <!--<mat-option>&#45;&#45;</mat-option>-->
+          <!--<mat-option *ngFor="let user of this.constantList.USER_TYPE" [value]="user.value">-->
+            <!--{{user.name}}-->
+          <!--</mat-option>-->
+        <!--</mat-select>-->
+      <!--</mat-form-field>-->
+    <!--</div>-->
+  <!--</div>-->
+  <div class="table-overview-container">
+    <skrambler-resource-table [paramFilters]="paramsFilter" [displayedColumnsViewArray]="displayedColumnsViewArray"
+      [endPointConfiguration]="endPointConfiguration" [triggerChange]="deletedItemId" (elementClick)="onClick($event)">
+    </skrambler-resource-table>
+  </div>
+</div>
+</div>

@@ -1,0 +1,411 @@
+<div class="page-layout carded fullwidth p-24 mb-50" [ngClass.lt-sm]="['w-100-p']" skramblerPerfectScrollbar>
+  <mat-card>
+    <form name="formGroup" [formGroup]="formGroup" novalidate>
+      <mat-card-header>
+        <button class="mat-headline back-button mt-4" (click)="goTo([this.routeList.BRAND_VIEW, this.baseModel.brand.business_reference_id].join('/'))">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div fxLayout="row" fxFill fxFlex="100%" class="pl-24 pr-24">
+          <h2 class="mat-headline" fxFlex="50" fxLayoutAlign="stretch" [innerHtml]="pageTitle"></h2>
+          <div fxFlex="50" fxLayoutAlign="end" fxLayout="row" class="h-44">
+            <span class="mr-8 mat-subheading-2" *ngIf="baseModel.active">
+              <strong>{{'TEXT.ACTIVE' | translate}}</strong>
+            </span>
+            <span class="mr-8 mat-subheading-2" *ngIf="!baseModel.active">
+              <strong>{{'TEXT.INACTIVE' | translate}}</strong>
+            </span>
+            <mat-slide-toggle [checked]="baseModel.active === 1" color="primary" aria-label="{{'INPUT.STATUS.PLACEHOLDER' | translate}}"
+              (change)="changeStatus($event)"></mat-slide-toggle>
+          </div>
+        </div>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content class="pt-20">
+        <mat-vertical-stepper class="w-100-p">
+          <mat-step label="{{'TEXT.BRANCH_DETAILS_LABEL' | translate}}" fxLayout="column" fxLayoutAlign="space-around center">
+            <div fxLayout="column" fxLayoutAlign="space-around stretch" fxLayoutGap="10px">
+              <!-- BRAND -->
+              <skrambler-brand-search #skramblerSearch fxFlex="100%" [placeHolderText]="'TEXT.SELECT_BRAND' | translate" [isRequired]="true"
+              [preSelectedBrand]="this.baseModel.brand"
+                (selectedBrand)="onBrandChange($event)">
+              </skrambler-brand-search>
+
+              <!-- NAME -->
+              <mat-form-field class="asterisk mat-form-field" [appearance]="this.constantList.FORM_FIELD_APPREANCE">
+                <mat-label>{{'INPUT.NAME.LABEL' | translate}}</mat-label>
+                <input matInput type="text" maxlength="40" placeholder="{{'INPUT.NAME.PLACEHOLDER' | translate}}"
+                  formControlName="name" required />
+                <mat-icon matSuffix *ngIf="formGroup.controls.name.valid">
+                  <i class="material-icons">check</i>
+                </mat-icon>
+                <mat-error *ngIf="formGroup.controls.name.invalid">
+                  {{getErrorMessage('name')}}
+                </mat-error>
+              </mat-form-field>
+
+              <!-- DESCRIPTION -->
+              <mat-form-field class="asterisk" fxFlex="50%" class="asterisk">
+                <textarea matInput placeholder="{{'INPUT.DESCRIPTION.PLACEHOLDER' | translate}}" formControlName="description"
+                  matTextareaAutosize matAutosizeMinRows="{{this.constantList.MAX_AUTO_SIZE_MIN_ROWS}}"
+                  matAutosizeMaxRows="{{this.constantList.MAX_AUTO_SIZE_MAX_ROWS}}" required>
+                  </textarea>
+                <mat-error *ngIf="this.formGroup.controls.description.invalid">
+                  {{getErrorMessage('description')}}
+                </mat-error>
+              </mat-form-field>
+
+              <div fxLayout="column" fxLayoutAlign="start start">
+                <button type="button" mat-raised-button matStepperNext color="primary">
+                  {{'TEXT.CONTINUE' | translate}}
+                </button>
+              </div>
+            </div>
+          </mat-step>
+          <mat-step label="{{'TEXT.ADDRESS_LABEL' | translate}}" fxLayout="column" fxLayoutAlign="space-around center">
+            <div fxLayout="column" fxLayoutAlign="space-around stretch" fxLayoutGap="10px">
+              <!-- LOCATION -->
+              <div fxLayout="column" fxLayoutAlign="space-around stretch" fxLayoutGap="5px">
+                <mat-form-field fxLayoutGap="10px" fxFill>
+                  <input matInput type="text" placeholder="{{'INPUT.LOCATION_NAME.PLACEHOLDER' | translate}}"
+                    formControlName="location_name" required #locationSearch />
+                  <mat-icon matSuffix *ngIf="formGroup.controls.location_name.valid">
+                    <i class="material-icons">check</i>
+                  </mat-icon>
+                  <mat-icon matSuffix matTooltip="{{'INPUT.LOCATION_NAME.HINT' | translate}}" matTooltipPosition="above">
+                    info
+                  </mat-icon>
+                  <mat-error *ngIf="formGroup.controls.location_name.invalid">
+                    {{getErrorMessage('location_name')}}
+                  </mat-error>
+                </mat-form-field>
+                <agm-map [latitude]="this.baseModel.latitude" [longitude]="this.baseModel.longitude" [scrollwheel]="false"
+                  [zoom]="zoom">
+                  <agm-marker [latitude]="this.baseModel.latitude" [longitude]="this.baseModel.longitude"
+                    [markerDraggable]="true" (dragEnd)="markerDragEnd($event)">
+                  </agm-marker>
+                </agm-map>
+              </div>
+
+              <!-- PHONE NUMBER-->
+              <mat-form-field class="asterisk mat-form-field" [appearance]="this.constantList.FORM_FIELD_APPREANCE">
+                <mat-label>{{'INPUT.PHONE.LABEL' | translate}}</mat-label>
+                <input matInput type="text" maxlength="40" placeholder="{{'INPUT.PHONE.PLACEHOLDER' | translate}}"
+                  formControlName="phone" required />
+                <mat-icon matSuffix *ngIf="formGroup.controls.phone.valid">
+                  <i class="material-icons">check</i>
+                </mat-icon>
+                <mat-error *ngIf="formGroup.controls.phone.invalid">
+                  {{getErrorMessage('phone')}}
+                </mat-error>
+              </mat-form-field>
+
+              <div fxLayout="column" fxLayoutAlign="start start">
+                <button type="button" mat-raised-button matStepperNext color="primary">
+                  {{'TEXT.CONTINUE' | translate}}
+                </button>
+              </div>
+            </div>
+          </mat-step>
+          <mat-step label="{{'TEXT.OPENING_HOURS' | translate}}" fxLayout="column" fxLayoutAlign="space-around center">
+            <div fxLayout="column" fxLayoutAlign="space-around stretch" fxLayoutGap="10px">
+              <!-- TIMINGS -->
+              <div fxLayout="column" fxLayoutAlign="space-around stretch" fxLayoutGap="5px">
+
+                <!-- MONDAY -->
+                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="50px">
+                  <div fxFlex="50" fxLayout="row" fxLayoutAlign="center center">
+                    <label class="label-day"><strong>{{'TEXT.MONDAY' | translate}}</strong></label>
+                  </div>
+                  <div fxFlex="100" fxLayoutAlign="center">
+                    <mat-form-field fxFlex="100">
+                      <mat-select placeholder="{{'TEXT.FROM' | translate}}" formControlName="branch_timings_mon_start_time">
+                        <mat-option *ngFor="let hour of this.constantList.DEFAULT_HOURS" [value]="hour.value">
+                          {{ hour.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="this.formGroup.controls.branch_timings_mon_start_time.invalid">
+                        {{getErrorMessage('branch_timings_mon_start_time')}}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxFlex="100" fxLayoutAlign="end">
+                    <mat-form-field fxFlex="100">
+                      <mat-select placeholder="{{'TEXT.TO' | translate}}" formControlName="branch_timings_mon_end_time">
+                        <mat-option *ngFor="let hour of this.constantList.DEFAULT_HOURS" [value]="hour.value">
+                          {{ hour.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="this.formGroup.controls.branch_timings_mon_end_time.invalid">
+                        {{getErrorMessage('branch_timings_mon_end_time')}}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxFlex="100" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px">
+                    <mat-slide-toggle color="primary" formControlName="branch_timings_mon_status" aria-label="Status"
+                      fxFlex="10%" [checked]="this.baseModel.branch_timings_mon_status == 1">
+                    </mat-slide-toggle>
+                    <strong *ngIf="this.formGroup.controls.branch_timings_mon_status.value">{{'TEXT.BRANCH_OPEN' |
+                      translate}}</strong>
+                    <strong *ngIf="!this.formGroup.controls.branch_timings_mon_status.value">{{'TEXT.BRANCH_CLOSED' |
+                      translate}}</strong>
+                  </div>
+                </div>
+
+                <!-- TUESDAY-->
+                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="50px">
+                  <div fxFlex="50" fxLayout="row" fxLayoutAlign="center center">
+                    <label class="label-day"><strong>{{'TEXT.TUESDAY' | translate}}</strong></label>
+                  </div>
+                  <div fxFlex="100" fxLayoutAlign="center">
+                    <mat-form-field fxFlex="100">
+                      <mat-select placeholder="{{'TEXT.FROM' | translate}}" formControlName="branch_timings_tues_start_time">
+                        <mat-option *ngFor="let hour of this.constantList.DEFAULT_HOURS" [value]="hour.value">
+                          {{ hour.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="this.formGroup.controls.branch_timings_tues_start_time.invalid">
+                        {{getErrorMessage('branch_timings_tues_start_time')}}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxFlex="100" fxLayoutAlign="end">
+                    <mat-form-field fxFlex="100">
+                      <mat-select placeholder="{{'TEXT.TO' | translate}}" formControlName="branch_timings_tues_end_time">
+                        <mat-option *ngFor="let hour of this.constantList.DEFAULT_HOURS" [value]="hour.value">
+                          {{ hour.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="this.formGroup.controls.branch_timings_tues_end_time.invalid">
+                        {{getErrorMessage('branch_timings_tues_end_time')}}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px" fxFlex="100">
+                    <mat-slide-toggle color="primary" formControlName="branch_timings_tues_status" aria-label="Status"
+                      fxFlex="10%">
+                    </mat-slide-toggle>
+                    <strong *ngIf="this.formGroup.controls.branch_timings_tues_status.value">{{'TEXT.BRANCH_OPEN' |
+                      translate}}</strong>
+                    <strong *ngIf="!this.formGroup.controls.branch_timings_tues_status.value">{{'TEXT.BRANCH_CLOSED' |
+                      translate}}</strong>
+                  </div>
+                </div>
+                <!-- WEDNESDAY -->
+                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="50px">
+                  <div fxFlex="50" fxLayout="row" fxLayoutAlign="center center">
+                    <label class="label-day"><strong>{{'TEXT.WEDNESDAY' | translate}}</strong></label>
+                  </div>
+                  <div fxFlex="100" fxLayoutAlign="center">
+                    <mat-form-field fxFlex="100">
+                      <mat-select placeholder="{{'TEXT.FROM' | translate}}" formControlName="branch_timings_wed_start_time">
+                        <mat-option *ngFor="let hour of this.constantList.DEFAULT_HOURS" [value]="hour.value">
+                          {{ hour.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="this.formGroup.controls.branch_timings_wed_start_time.invalid">
+                        {{getErrorMessage('branch_timings_tues_start_time')}}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxFlex="100" fxLayoutAlign="end">
+                    <mat-form-field fxFlex="100">
+                      <mat-select placeholder="{{'TEXT.TO' | translate}}" formControlName="branch_timings_wed_end_time">
+                        <mat-option *ngFor="let hour of this.constantList.DEFAULT_HOURS" [value]="hour.value">
+                          {{ hour.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="this.formGroup.controls.branch_timings_wed_end_time.invalid">
+                        {{getErrorMessage('branch_timings_tues_end_time')}}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px" fxFlex="100">
+                    <mat-slide-toggle color="primary" formControlName="branch_timings_wed_status" aria-label="Status"
+                      fxFlex="10%">
+                    </mat-slide-toggle>
+                    <strong *ngIf="this.formGroup.controls.branch_timings_wed_status.value">{{'TEXT.BRANCH_OPEN' |
+                      translate}}</strong>
+                    <strong *ngIf="!this.formGroup.controls.branch_timings_wed_status.value">{{'TEXT.BRANCH_CLOSED' |
+                      translate}}</strong>
+                  </div>
+                </div>
+
+                <!-- THURSDAY -->
+                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="50px">
+                  <div fxFlex="50" fxLayout="row" fxLayoutAlign="center center">
+                    <label class="label-day"><strong>{{'TEXT.THURSDAY' | translate}}</strong></label>
+                  </div>
+                  <div fxFlex="100" fxLayoutAlign="center">
+                    <mat-form-field fxFlex="100">
+                      <mat-select placeholder="{{'TEXT.FROM' | translate}}" formControlName="branch_timings_thurs_start_time">
+                        <mat-option *ngFor="let hour of this.constantList.DEFAULT_HOURS" [value]="hour.value">
+                          {{ hour.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="this.formGroup.controls.branch_timings_thurs_start_time.invalid">
+                        {{getErrorMessage('branch_timings_tues_start_time')}}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxFlex="100" fxLayoutAlign="end">
+                    <mat-form-field fxFlex="100">
+                      <mat-select placeholder="{{'TEXT.TO' | translate}}" formControlName="branch_timings_thurs_end_time">
+                        <mat-option *ngFor="let hour of this.constantList.DEFAULT_HOURS" [value]="hour.value">
+                          {{ hour.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="this.formGroup.controls.branch_timings_thurs_end_time.invalid">
+                        {{getErrorMessage('branch_timings_tues_end_time')}}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px" fxFlex="100">
+                    <mat-slide-toggle color="primary" formControlName="branch_timings_thurs_status" aria-label="Status"
+                      fxFlex="10%">
+                    </mat-slide-toggle>
+                    <strong *ngIf="this.formGroup.controls.branch_timings_thurs_status.value">{{'TEXT.BRANCH_OPEN' |
+                      translate}}</strong>
+                    <strong *ngIf="!this.formGroup.controls.branch_timings_thurs_status.value">{{'TEXT.BRANCH_CLOSED' |
+                      translate}}</strong>
+                  </div>
+                </div>
+
+                <!-- FRIDAY -->
+                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="50px">
+                  <div fxFlex="50" fxLayout="row" fxLayoutAlign="center center">
+                    <label class="label-day"><strong>{{'TEXT.FRIDAY' | translate}}</strong></label>
+                  </div>
+                  <div fxFlex="100" fxLayoutAlign="center">
+                    <mat-form-field fxFlex="100">
+                      <mat-select placeholder="{{'TEXT.FROM' | translate}}" formControlName="branch_timings_frid_start_time">
+                        <mat-option *ngFor="let hour of this.constantList.DEFAULT_HOURS" [value]="hour.value">
+                          {{ hour.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="this.formGroup.controls.branch_timings_frid_start_time.invalid">
+                        {{getErrorMessage('branch_timings_tues_start_time')}}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxFlex="100" fxLayoutAlign="end">
+                    <mat-form-field fxFlex="100">
+                      <mat-select placeholder="{{'TEXT.TO' | translate}}" formControlName="branch_timings_frid_end_time">
+                        <mat-option *ngFor="let hour of this.constantList.DEFAULT_HOURS" [value]="hour.value">
+                          {{ hour.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="this.formGroup.controls.branch_timings_frid_end_time.invalid">
+                        {{getErrorMessage('branch_timings_tues_end_time')}}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px" fxFlex="100">
+                    <mat-slide-toggle color="primary" formControlName="branch_timings_frid_status" aria-label="Status"
+                      fxFlex="10%">
+                    </mat-slide-toggle>
+                    <strong *ngIf="this.formGroup.controls.branch_timings_frid_status.value">{{'TEXT.BRANCH_OPEN' |
+                      translate}}</strong>
+                    <strong *ngIf="!this.formGroup.controls.branch_timings_frid_status.value">{{'TEXT.BRANCH_CLOSED' |
+                      translate}}</strong>
+                  </div>
+                </div>
+                <!-- SATURDAY -->
+                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="50px">
+                  <div fxFlex="50" fxLayout="row" fxLayoutAlign="center center">
+                    <label class="label-day"><strong>{{'TEXT.SATURDAY' | translate}}</strong></label>
+                  </div>
+                  <div fxFlex="100" fxLayoutAlign="center">
+                    <mat-form-field fxFlex="100">
+                      <mat-select placeholder="{{'TEXT.FROM' | translate}}" formControlName="branch_timings_sat_start_time">
+                        <mat-option *ngFor="let hour of this.constantList.DEFAULT_HOURS" [value]="hour.value">
+                          {{ hour.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="this.formGroup.controls.branch_timings_sat_start_time.invalid">
+                        {{getErrorMessage('branch_timings_tues_start_time')}}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxFlex="100" fxLayoutAlign="end">
+                    <mat-form-field fxFlex="100">
+                      <mat-select placeholder="{{'TEXT.TO' | translate}}" formControlName="branch_timings_sat_end_time">
+                        <mat-option *ngFor="let hour of this.constantList.DEFAULT_HOURS" [value]="hour.value">
+                          {{ hour.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="this.formGroup.controls.branch_timings_sat_end_time.invalid">
+                        {{getErrorMessage('branch_timings_tues_end_time')}}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px" fxFlex="100">
+                    <mat-slide-toggle color="primary" formControlName="branch_timings_sat_status" aria-label="Status"
+                      fxFlex="10%">
+                    </mat-slide-toggle>
+                    <strong *ngIf="this.formGroup.controls.branch_timings_sat_status.value">{{'TEXT.BRANCH_OPEN' |
+                      translate}}</strong>
+                    <strong *ngIf="!this.formGroup.controls.branch_timings_sat_status.value">{{'TEXT.BRANCH_CLOSED' |
+                      translate}}</strong>
+                  </div>
+                </div>
+                <!-- SUNDAY -->
+                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="50px">
+                  <div fxFlex="50" fxLayout="row" fxLayoutAlign="center center">
+                    <label class="label-day"><strong>{{'TEXT.SUNDAY' | translate}}</strong></label>
+                  </div>
+                  <div fxFlex="100" fxLayoutAlign="center">
+                    <mat-form-field fxFlex="100">
+                      <mat-select placeholder="{{'TEXT.FROM' | translate}}" formControlName="branch_timings_sun_start_time">
+                        <mat-option *ngFor="let hour of this.constantList.DEFAULT_HOURS" [value]="hour.value">
+                          {{ hour.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="this.formGroup.controls.branch_timings_sun_start_time.invalid">
+                        {{getErrorMessage('branch_timings_tues_start_time')}}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxFlex="100" fxLayoutAlign="end">
+                    <mat-form-field fxFlex="100">
+                      <mat-select placeholder="{{'TEXT.TO' | translate}}" formControlName="branch_timings_sun_end_time">
+                        <mat-option *ngFor="let hour of this.constantList.DEFAULT_HOURS" [value]="hour.value">
+                          {{ hour.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="this.formGroup.controls.branch_timings_sun_end_time.invalid">
+                        {{getErrorMessage('branch_timings_tues_end_time')}}
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px" fxFlex="100">
+                    <mat-slide-toggle color="primary" formControlName="branch_timings_sun_status" aria-label="Status"
+                      fxFlex="10%">
+                    </mat-slide-toggle>
+                    <strong *ngIf="this.formGroup.controls.branch_timings_sun_status.value">{{'TEXT.BRANCH_OPEN' |
+                      translate}}</strong>
+                    <strong *ngIf="!this.formGroup.controls.branch_timings_sun_status.value">{{'TEXT.BRANCH_CLOSED' |
+                      translate}}</strong>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </mat-step>
+        </mat-vertical-stepper>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+      <mat-card-actions>
+        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+          <button mat-raised-button color="primary" type="button" [attr.aria-label]="'BUTTONS.CANCEL' | translate"
+            (click)="goTo([this.routeList.BRAND_VIEW, this.baseModel.brand.business_reference_id].join('/'))">
+            {{'BUTTONS.CANCEL' | translate}}
+          </button>
+          <button mat-raised-button type="button" [attr.aria-label]="'BUTTONS.SAVE' | translate" (click)="onSubmit()"
+            class="submit-button" [disabled]="formGroup.invalid">
+            {{'BUTTONS.SAVE' | translate}}
+          </button>
+        </div>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+</div>

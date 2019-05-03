@@ -1,0 +1,112 @@
+<div class="page-layout carded fullwidth p-24 mb-50" [ngClass.lt-sm]="['w-100-p']" skramblerPerfectScrollbar>
+  <mat-card>
+    <mat-card-header>
+      <button class="mat-headline back-button mt-4" (click)="goTo(routeList.USERS_LISTING);">
+  
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div fxLayout="row" fxFill fxFlex="100%" class="pl-24 pr-24">
+          <h2 class="mat-headline" fxFlex="50" fxLayoutAlign="stretch" [innerHtml]="pageTitle"></h2>
+          <div fxFlex="50" fxLayoutAlign="end" fxLayout="row" class="h-44">
+            <span class="mr-8 mat-subheading-2" *ngIf="baseModel.active">
+              <strong>{{'TEXT.ACTIVE' | translate}}</strong>
+            </span>
+            <span class="mr-8 mat-subheading-2" *ngIf="!baseModel.active">
+              <strong>{{'TEXT.INACTIVE' | translate}}</strong>
+            </span>
+            <mat-slide-toggle [checked]="baseModel.active" color="primary" aria-label="{{'INPUT.STATUS.PLACEHOLDER' | translate}}"
+              (change)="changeStatus($event)"></mat-slide-toggle>
+          </div>
+        </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content class="pt-20">
+      <form name="formGroup" [formGroup]="formGroup" novalidate>
+        <div fxLayout="column" fxLayoutAlign="space-between stretch">
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <mat-form-field fxFlex="45%">
+              <mat-label>{{'INPUT.FIRST_NAME.LABEL' | translate}}</mat-label>
+              <input matInput type="text" maxlength="50" formControlName="first_name" required />
+              <mat-error *ngIf="formGroup.controls.first_name.invalid">
+                {{getErrorMessage('first_name')}}
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field fxFlex="45%">
+              <mat-label>{{'INPUT.LAST_NAME.LABEL' | translate}}</mat-label>
+              <input matInput type="text" maxlength="40" formControlName="last_name" required />
+              <mat-error *ngIf="formGroup.controls.first_name.invalid">
+                {{getErrorMessage('last_name')}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          
+  
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <mat-form-field fxFlex="45%">
+              <mat-label>{{'INPUT.EMAIL.LABEL' | translate}}</mat-label>
+              <input matInput type="email"  formControlName="email" required />
+              <mat-error *ngIf="formGroup.controls.email.invalid">
+                {{getErrorMessage('email')}}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="45%">
+                <mat-label>{{'INPUT.PASSWORD.LABEL' | translate}}</mat-label>
+              <input matInput [type]="!this.IsPassVisible ? 'password' : 'text'" placeholder="Password" maxlength="18" minlength="6" formControlName="user_password" 
+              [required]="!this.isEditMode()">
+              <mat-error *ngIf="this.formGroup.controls.user_password.invalid">
+                {{getErrorMessage('user_password')}}
+              </mat-error>
+              <mat-icon matSuffix class="cursor-pointer" (click)="this.IsPassVisible = !this.IsPassVisible">{{IsPassVisible ? 'visibility' :
+                'visibility_off'}}
+              </mat-icon>
+              <mat-icon matSuffix *ngIf="this.formGroup.controls.user_password.valid"><i
+                class="material-icons green-900-fg">check</i></mat-icon>
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+
+              <mat-form-field fxFlex="45%">
+                  <mat-select placeholder="{{'INPUT.USER_ROLE_ID.LABEL' | translate}}" formControlName="user_role_id" required (selectionChange)="onRoleChange($event)">
+                      <mat-option>--</mat-option>
+                    <mat-option *ngIf="this.userService.roles.slug !== this.constantList.ADMIN_ROLE" [value]="this.constantList.SKRAMBLER_ADMIN_ROLE_ID">
+                      Admin
+                    </mat-option>
+                    <mat-option  [value]="this.constantList.SKRAMBLER_BRAND_OWNER_ROLE_ID">
+                      Brand Owner
+                    </mat-option>
+                    <mat-option *ngIf="this.userService.roles.slug !== this.constantList.ADMIN_ROLE" [value]="this.constantList.SKRAMBLER_SUPER_ADMIN_ROLE_ID">
+                      Super Admin
+                    </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="formGroup.controls.user_role_id.invalid">
+                      {{getErrorMessage('user_role_id')}}
+                    </mat-error>
+              </mat-form-field>
+              
+           <!-- BRAND -->
+           <skrambler-brand-search *ngIf="this.isUserRoleBrandOwner" fxFlex="45%" [placeHolderText]="'TEXT.SELECT_BRAND' | translate" [isRequired]="this.isUserRoleBrandOwner"
+           [preSelectedBrand]="this.baseModel.brand"
+             (selectedBrand)="onBrandChange($event)">
+           </skrambler-brand-search>
+            
+
+          </div>
+  
+        </div>
+      </form>
+    </mat-card-content>
+    <mat-divider></mat-divider>
+    <mat-card-actions>
+      <div fxLayout="column" fxLayoutAlign="space-between stretch">
+        <div ffxLayout="row" fxLayoutAlign="end center" fxLayoutGap="20px">
+            <button mat-raised-button type="button" [attr.aria-label]="'BUTTONS.SAVE' | translate" class="submit-button"
+            (click)="onSubmit()" [disabled]="formGroup.invalid || validateBrandOwner()">
+            {{'BUTTONS.SAVE' | translate}}
+          </button>
+        </div>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+  </div>

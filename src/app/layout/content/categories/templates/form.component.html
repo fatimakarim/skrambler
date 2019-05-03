@@ -1,0 +1,67 @@
+<div class="page-layout carded fullwidth p-24 mb-50" [ngClass.lt-sm]="['w-100-p']" skramblerPerfectScrollbar>
+  <mat-card>
+    <form name="formGroup" [formGroup]="formGroup" novalidate>
+      <mat-card-header>
+        <button class="mat-headline back-button mt-4" (click)="goTo(routeList.CATEGORY_LISTING);">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div fxLayout="row" fxFill fxFlex="100%" class="pl-24 pr-24">
+          <h2 class="mat-headline" fxFlex="50" fxLayoutAlign="stretch" [innerHtml]="pageTitle"></h2>
+          <div fxFlex="50" fxLayoutAlign="end" fxLayout="row" class="h-44">
+            <span class="mr-8 mat-subheading-2" *ngIf="baseModel.active">
+              <strong>{{'TEXT.ACTIVE' | translate}}</strong>
+            </span>
+            <span class="mr-8 mat-subheading-2" *ngIf="!baseModel.active">
+              <strong>{{'TEXT.INACTIVE' | translate}}</strong>
+            </span>
+            <mat-slide-toggle [checked]="baseModel.active" color="primary" aria-label="{{'INPUT.STATUS.PLACEHOLDER' | translate}}"
+              (change)="changeStatus($event)"></mat-slide-toggle>
+          </div>
+        </div>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content class="pt-20">
+        <div fxLayout="column" fxLayoutAlign="space-around stretch">
+
+          <mat-form-field fxFlex="100%" fxFlex.ls-md="100%" class="asterisk mat-form-field" [appearance]="this.constantList.FORM_FIELD_APPREANCE">
+            <mat-select required placeholder="{{'TEXT.SELECT_CATEGORY' | translate}}" (selectionChange)="onCategoryChange($event)" formControlName="category_id">
+              <mat-option *ngFor="let category of parentCategories" [value]="category.id">
+                {{category.name}}
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix *ngIf="formGroup.controls.category_id.valid">
+                <i class="material-icons">check</i>
+              </mat-icon>
+              <mat-error *ngIf="formGroup.controls.category_id.invalid">
+                {{getErrorMessage('category_id')}}
+              </mat-error>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="100%" fxFlex.ls-md="100%" class="asterisk mat-form-field" [appearance]="this.constantList.FORM_FIELD_APPREANCE">
+            <mat-label>{{'INPUT.NAME.LABEL' | translate}}</mat-label>
+            <input matInput type="text" maxlength="40" placeholder="{{'INPUT.NAME.PLACEHOLDER' | translate}}"
+              formControlName="name" required />
+            <mat-icon matSuffix *ngIf="formGroup.controls.name.valid">
+              <i class="material-icons">check</i>
+            </mat-icon>
+            <mat-error *ngIf="formGroup.controls.name.invalid">
+              {{getErrorMessage('name')}}
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+      <mat-card-actions>
+        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+          <button mat-raised-button color="primary" type="button" [attr.aria-label]="'BUTTONS.CANCEL' | translate" (click)="goTo(routeList.CATEGORY_LISTING);">
+            {{'BUTTONS.CANCEL' | translate}}
+          </button>
+          <button mat-raised-button type="button" [attr.aria-label]="'BUTTONS.SAVE' | translate" class="submit-button"
+            (click)="onSubmit()" [disabled]="formGroup.invalid">
+            {{'BUTTONS.SAVE' | translate}}
+          </button>
+        </div>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+</div>

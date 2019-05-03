@@ -1,0 +1,21 @@
+:host{
+    ::ng-deep {
+        mat-row{
+            mat-cell{
+                &:first-child{
+                    flex: 0 0 50px;
+            }
+           
+        }
+        }
+
+        mat-header-row{
+            mat-header-cell{
+                &:first-child{
+                    flex: 0 0 50px;
+            }
+           
+        }
+        }
+    }
+}

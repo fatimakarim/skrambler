@@ -1,0 +1,12 @@
+<div class="header mb-8" fxLayout="row">
+  <div fxFlex="70%">
+    <h2 *ngIf="title" fxLayoutAlign="start center" class="text-uppercase">{{title}}</h2>
+  </div>
+  <div fxFlex="30%" fxLayoutAlign="end center">
+    <a mat-raised-button color="primary"
+      *ngIf="allowAction"
+      fxLayoutAlign="end center"
+      [routerLink]="link">{{linkText}}
+    </a>
+  </div>
+</div>

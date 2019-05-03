@@ -1,0 +1,32 @@
+<div class="page-layout blank p-24 mb-50" skramblerPerfectScrollbar fxLayout="column" fxLayoutAlign="space-around stretch">
+  <div fxLayout="column" fxLayoutAlign="space-around stretch">
+    <div fxLayout="row" fxLayoutAlign="end center">
+      <button fxFlex="23%"  mat-raised-button color="primary" (click)="onExport();">{{'BUTTONS.EXPORT' | translate}}</button>
+    </div>
+    <skrambler-header title="{{'TEXT.LIST_TITLE' | translate}}" [allowAction]="this._permissionService.isAdmin()" linkText="{{'TEXT.ADD_TITLE' | translate}}"
+      [link]="routeList.BRAND_CREATE"></skrambler-header>
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <mat-form-field fxFlex="45%" fxFlexFill>
+        <mat-select [disabled]="!this._permissionService.isAdmin()" placeholder="{{'TEXT.SELECT_CATEGORY' | translate}}" (selectionChange)="onCategoryChange($event)">
+          <mat-option>--</mat-option>
+          <mat-option *ngFor="let category of parentCategories" [value]="category.id">
+            {{category.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field fxFlex="45%" fxFlexFill>
+        <mat-select [disabled]="!this._permissionService.isAdmin()" placeholder="{{'TEXT.SELECT_STATUS' | translate}}" (selectionChange)="onStatusChange($event)">
+          <mat-option>--</mat-option>
+          <mat-option *ngFor="let status of this.constantList.STATUSES" [value]="status.value">
+            {{status.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="table-overview-container">
+    <skrambler-resource-table [displayedColumnsViewArray]="displayedColumnsViewArray"
+      [endPointConfiguration]="endPointConfiguration" [triggerChange]="deletedItemId" (elementClick)="onClick($event)">
+    </skrambler-resource-table>
+  </div>
+</div>

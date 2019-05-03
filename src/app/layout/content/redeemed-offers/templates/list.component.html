@@ -1,0 +1,68 @@
+<div class="page-layout blank p-24 mb-50" skramblerPerfectScrollbar fxLayout="column" fxLayoutAlign="space-around stretch">
+  <div fxLayout="column" fxLayoutAlign="space-around stretch" fxLayoutGap="20px">
+    <div fxLayout="row" fxLayoutAlign="end center">
+      <button fxFlex="23%"  mat-raised-button color="primary" (click)="onExport();">{{'BUTTONS.EXPORT' | translate}}</button>
+    </div>
+    <!--<div fxLayout="column" fxLayoutAlign="space-around stretch">-->
+      <!--<skrambler-header title="{{'TEXT.LIST_TITLE' | translate}}"></skrambler-header>-->
+      <!--<div fxLayout="row" fxLayoutAlign="space-between center">-->
+        <!--<mat-form-field fxFlex="23%" fxFlexFill>-->
+          <!--<mat-select placeholder="{{'TEXT.SELECT_OFFER' | translate}}" (selectionChange)="onOfferTypeChange($event)">-->
+            <!--<mat-option>&#45;&#45;</mat-option>-->
+            <!--<mat-option *ngFor="let offer of this.constantList.OFFER_TYPES" [value]="offer.id">-->
+              <!--{{offer.name}}-->
+            <!--</mat-option>-->
+          <!--</mat-select>-->
+        <!--</mat-form-field>-->
+        <!--<mat-form-field fxFlex="23%" fxFlexFill>-->
+            <!--<mat-select placeholder="{{'FILTERS.GENDER.PLACEHOLDER' | translate}}" (selectionChange)="onGenderChange($event)">-->
+              <!--<mat-option>&#45;&#45;</mat-option>-->
+              <!--<mat-option *ngFor="let gender of this.constantList.GENDER" [value]="gender.value">-->
+                <!--{{gender.name}}-->
+              <!--</mat-option>-->
+            <!--</mat-select>-->
+          <!--</mat-form-field>-->
+          <!--<mat-form-field fxFlex="23%" fxFlexFill>-->
+              <!--<mat-select placeholder="{{'FILTERS.AGE.PLACEHOLDER' | translate}}" (selectionChange)="onAgeChange($event)">-->
+                <!--<mat-option>&#45;&#45;</mat-option>-->
+                <!--<mat-option *ngFor="let age of this.constantList.AGE_LIMIT" [value]="age.value">-->
+                  <!--{{age.viewValue}}-->
+                <!--</mat-option>-->
+              <!--</mat-select>-->
+            <!--</mat-form-field>-->
+        <!--&lt;!&ndash; OFFER TYPES&ndash;&gt;-->
+        <!--<mat-form-field fxFlex="23%" fxFlexFill >-->
+          <!--<mat-select placeholder="{{'TEXT.OFFER_KIND' | translate}}"  (selectionChange)="onOfferChange($event)">-->
+            <!--<mat-option>&#45;&#45;</mat-option>-->
+            <!--<mat-option *ngFor="let offer of this.constantList.KIND_OFFER_TYPES" [value]="offer.id">-->
+              <!--{{offer.name}}-->
+            <!--</mat-option>-->
+          <!--</mat-select>-->
+        <!--</mat-form-field>-->
+      <!--</div>-->
+      <!--<div fxLayout="row" fxLayoutAlign="space-between center">-->
+        <!--<mat-form-field fxFlex="23%" fxFlexFill>-->
+          <!--<input matInput  formControlName="from_date" [matDatepicker]="fromDate" placeholder="{{'TEXT.FROM_DATE' | translate}}">-->
+          <!--<mat-datepicker-toggle matSuffix [disabled]="false" [for]="fromDate"></mat-datepicker-toggle>-->
+          <!--<mat-datepicker #fromDate></mat-datepicker>-->
+        <!--</mat-form-field>-->
+        <!--<mat-form-field fxFlex="23%" fxFlexFill>-->
+        <!--<input matInput formControlName="to_date" [matDatepicker]="toDate" placeholder="{{'TEXT.TO_DATE' | translate}}">-->
+        <!--<mat-datepicker-toggle matSuffix [disabled]="false"  [for]="toDate"></mat-datepicker-toggle>-->
+        <!--<mat-datepicker #toDate></mat-datepicker>-->
+        <!--</mat-form-field>-->
+        <!--<button fxFlex="23%"  mat-raised-button color="primary" (click)="onApply();">{{'BUTTONS.APPLY'-->
+          <!--| translate}}</button>-->
+
+
+      <!--<button fxFlex="23%"  mat-raised-button color="primary" (click)="onExport();">{{'BUTTONS.EXPORT'-->
+        <!--| translate}}</button>-->
+    <!--</div>-->
+    <!--</div>-->
+    <div class="table-overview-container">
+      <skrambler-resource-table [paramFilters]="paramsFilter" [displayedColumnsViewArray]="displayedColumnsViewArray"
+        [endPointConfiguration]="endPointConfiguration" [triggerChange]="deletedItemId">
+      </skrambler-resource-table>
+    </div>
+  </div>
+</div>

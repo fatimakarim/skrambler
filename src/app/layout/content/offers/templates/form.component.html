@@ -1,0 +1,296 @@
+<div class="page-layout carded fullwidth p-24 mb-50" [ngClass.lt-sm]="['w-100-p']" skramblerPerfectScrollbar>
+  <mat-card>
+    <form name="formGroup" [formGroup]="formGroup" novalidate>
+      <mat-card-header>
+        <button class="mat-headline back-button mt-4" (click)="this.location.back()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div fxLayout="row" fxFill fxFlex="100%" class="pl-24 pr-24">
+          <h2 class="mat-headline" fxFlex="50" fxLayoutAlign="stretch" [innerHtml]="pageTitle"></h2>
+          <div fxFlex="50" fxLayoutAlign="end" fxLayout="row" class="h-44">
+            <span class="mr-8 mat-subheading-2" *ngIf="baseModel.active">
+              <strong>{{'TEXT.ACTIVE' | translate}}</strong>
+            </span>
+            <span class="mr-8 mat-subheading-2" *ngIf="!baseModel.active">
+              <strong>{{'TEXT.INACTIVE' | translate}}</strong>
+            </span>
+            <mat-slide-toggle [checked]="baseModel.active"  color="primary" aria-label="{{'INPUT.STATUS.PLACEHOLDER' | translate}}"
+              (change)="changeStatus($event)"></mat-slide-toggle>
+          </div>
+        </div>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content class="pt-20">
+        <div fxLayout="column" fxLayoutAlign="space-between stretch">
+          <div  fxLayout="row" fxLayoutAlign="space-between center">
+            <!-- BRAND -->
+            <skrambler-brand-search #skramblerSearch fxFlex="45%" [placeHolderText]="'TEXT.SELECT_BRAND' | translate"
+              [isRequired]="true" [isDisabled]="!this._permissionService.isAdmin()" [preSelectedBrand]="this.baseModel.brand" (selectedBrand)="onBrandChange($event)">
+            </skrambler-brand-search>
+            <!-- OFFER TYPES-->
+            <mat-form-field fxFlex="45%" fxFlexFill class="asterisk mat-form-field">
+              <mat-select placeholder="{{'TEXT.SELECT_OFFER_TYPES' | translate}}"   formControlName="offer_type_id"
+                required>
+                <mat-option>--</mat-option>
+                <mat-option *ngFor="let offer of this.constantList.OFFER_TYPES" [value]="offer.id">
+                  {{offer.name}}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix *ngIf="formGroup.controls.offer_type_id.valid">
+                <i class="material-icons">check</i>
+              </mat-icon>
+              <mat-error *ngIf="formGroup.controls.offer_type_id.invalid">
+                {{getErrorMessage('offer_type_id')}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <!-- OFFER KIND TYPES-->
+            <mat-form-field fxFlex="45%" fxFlexFill class="asterisk mat-form-field">
+              <mat-select placeholder="{{'INPUT.KIND_ID.PLACEHOLDER' | translate}}"  (selectionChange)="onOfferChange($event.value)" formControlName="kind_id"
+                          required>
+                <mat-option>--</mat-option>
+                <mat-option *ngFor="let offer of this.constantList.KIND_OFFER_TYPES" [value]="offer.id">
+                  {{offer.name}}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix *ngIf="formGroup.controls.kind_id.valid">
+                <i class="material-icons">check</i>
+              </mat-icon>
+              <mat-error *ngIf="formGroup.controls.kind_id.invalid">
+                {{getErrorMessage('kind_id')}}
+              </mat-error>
+            </mat-form-field>
+            <!-- DELIVERY TYPES-->
+            <mat-form-field  *ngIf="this.baseModel.brand.category_id === this.constantList.BRAND_FOOD_DRINKS_ID" fxFlex="45%" fxFlexFill class="asterisk mat-form-field">
+              <mat-select placeholder="{{'INPUT.DELIVERY_TYPE.PLACEHOLDER' | translate}}"  (selectionChange)="onTypeChange($event)" formControlName="delivery_type"
+                          multiple>
+                <mat-option (onSelectionChange)="optionChanges($event,'description')" *ngFor="let delivery of this.constantList.DELIVERY_TYPES" [value]="delivery"  >
+                  {{delivery.viewValue}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="formGroup.controls.delivery_type.invalid">
+                {{getErrorMessage('delivery_type')}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Delivery types description -->
+          <ng-container *ngFor="let type of this.baseModel.offer_delivery_types ;  index as i;">
+            <div fxLayout="row" *ngIf="checkDeliveryExist(type.delivery_type_id)" fxLayoutAlign="end end">
+              <mat-checkbox color="primary" (change)="brandOptionSelected($event.checked ,'description', type.delivery_type_id )"   formControlName="default_text_{{type.delivery_type_id}}">
+                <mat-label>Use Default Text</mat-label>
+              </mat-checkbox>
+            </div>
+          <mat-form-field  fxFlex="100%" class="asterisk mat-form-field" fxFlex="50%" class="asterisk">
+
+            <textarea matInput placeholder="{{type.placeholder ? type.placeholder : type.type.name +  ' Description'}}" formControlName="description_{{type.delivery_type_id}}" [maxlength]="200"
+                      matTextareaAutosize matAutosizeMinRows="{{this.constantList.MAX_AUTO_SIZE_MIN_ROWS}}" matAutosizeMaxRows="{{this.constantList.MAX_AUTO_SIZE_MAX_ROWS}}">
+                                </textarea>
+            <mat-error *ngIf="checkInValidControl('description', type.delivery_type_id)">
+              {{getErrorMessage('description', type.delivery_type_id)}}
+            </mat-error>
+          </mat-form-field>
+          </ng-container>
+          <!--end-->
+          <!-- BRANCHES-->
+          <mat-form-field fxFlex="100%" fxLayoutGap="10px" *ngIf="this.formGroup.get('kind_id').value !== this.constantList.OFFER_TYPE_LOYALTY_ID">
+            <div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="10px">
+              <div>
+                <input type="text" placeholder="{{'TEXT.SELECT_BRANCHES' | translate}}" matInput formControlName="branches"
+                  [matAutocomplete]="auto_tags" [required]="this.branchesChipList.length==0">
+                <mat-autocomplete #auto_tags="matAutocomplete" (optionSelected)="onBranchSelected($event)">
+                  <mat-option *ngFor="let branch of filteredBranches | async" [value]="branch.name">
+                    {{branch.name}}
+                  </mat-option>
+                </mat-autocomplete>
+              </div>
+              <mat-chip-list >
+                <mat-chip *ngFor="let tag of branchesChipList" selected color="primary" >
+                  <mat-icon class="cross-mat-icon white-font-color" (click)="removeBranchChip(tag)">cancel</mat-icon>{{tag.name}}
+                </mat-chip>
+              </mat-chip-list>
+            </div>
+          </mat-form-field>
+
+          <!-- DESCRIPTION -->
+          <mat-form-field fxFlex="100%" class="asterisk mat-form-field" fxFlex="50%" class="asterisk">
+            <textarea matInput placeholder="{{'INPUT.DESCRIPTION.PLACEHOLDER' | translate}}" formControlName="description"
+              matTextareaAutosize matAutosizeMinRows="{{this.constantList.MAX_AUTO_SIZE_MIN_ROWS}}" matAutosizeMaxRows="{{this.constantList.MAX_AUTO_SIZE_MAX_ROWS}}"
+              required>
+                                </textarea>
+            <mat-error *ngIf="this.formGroup.controls.description.invalid">
+              {{getErrorMessage('description')}}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="space-between stretch">
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <!-- START DATE-->
+            <mat-form-field fxFlex="45%" fxFlexFill class="asterisk mat-form-field"
+             *ngIf="this.formGroup.get('kind_id').value !== this.constantList.OFFER_TYPE_LOYALTY_ID &&
+                    this.formGroup.get('kind_id').value !== this.constantList.OFFER_TYPE_SURPRISE_ID">
+              <input matInput [matDatepicker]="beginDatePicker" placeholder="{{'INPUT.BEGIN_DATE.PLACEHOLDER' | translate}}"
+                formControlName="begin_date" (focus)="beginDatePicker.open()" onkeydown="return false;" (click)="beginDatePicker.open()"
+                required>
+              <mat-datepicker-toggle matSuffix [disabled]="false" [for]="beginDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #beginDatePicker></mat-datepicker>
+              <mat-error *ngIf="this.formGroup.controls.begin_date.invalid">
+                {{getErrorMessage('begin_date')}}
+              </mat-error>
+            </mat-form-field>
+            <!-- END DATE-->
+            <mat-form-field fxFlex="45%" fxFlexFill class="asterisk mat-form-field"
+                            *ngIf="this.formGroup.get('kind_id').value !== this.constantList.OFFER_TYPE_LOYALTY_ID &&
+              this.formGroup.get('kind_id').value !== this.constantList.OFFER_TYPE_SURPRISE_ID">
+              <input matInput [matDatepicker]="endDatePicker" placeholder="{{'INPUT.END_DATE.PLACEHOLDER' | translate}}"
+                formControlName="end_date" (focus)="endDatePicker.open()" onkeydown="return false;" (click)="endDatePicker.open()"
+                required>
+              <mat-datepicker-toggle matSuffix [disabled]="false" [for]="endDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #endDatePicker></mat-datepicker>
+              <mat-error *ngIf="this.formGroup.controls.end_date.invalid">
+                {{getErrorMessage('begin_date')}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+
+
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <!-- POINTS EARNED-->
+            <mat-form-field fxFlex="45%" fxFlexFill class="asterisk mat-form-field" [appearance]="this.constantList.FORM_FIELD_APPREANCE">
+              <mat-label>{{'INPUT.POINTS.LABEL' | translate}}</mat-label>
+              <input matInput type="number" placeholder="{{'INPUT.POINTS.PLACEHOLDER' | translate}}" formControlName="points_earned"
+                required />
+              <mat-icon matSuffix *ngIf="formGroup.controls.points_earned.valid">
+                <i class="material-icons">check</i>
+              </mat-icon>
+              <mat-error *ngIf="formGroup.controls.points_earned.invalid">
+                {{getErrorMessage('points_earned')}}
+              </mat-error>
+            </mat-form-field>
+
+
+            <!-- SKRAMBLER FEES-->
+            <mat-form-field fxFlex="45%" fxFlexFill class="asterisk mat-form-field" [appearance]="this.constantList.FORM_FIELD_APPREANCE">
+              <mat-label>{{'INPUT.FEES.LABEL' | translate}}</mat-label>
+              <input matInput type="number" placeholder="{{'INPUT.FEES.PLACEHOLDER' | translate}}"
+                formControlName="fees" required />
+              <mat-icon matSuffix *ngIf="formGroup.controls.fees.valid">
+                <i class="material-icons">check</i>
+              </mat-icon>
+              <mat-error *ngIf="formGroup.controls.fees.invalid">
+                {{getErrorMessage('fees')}}
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <mat-form-field fxFlex="45%" fxFlexFill class="asterisk mat-form-field" [appearance]="this.constantList.FORM_FIELD_APPREANCE"
+                            *ngIf="this.formGroup.get('kind_id').value !== this.constantList.OFFER_TYPE_LOYALTY_ID">
+              <mat-label>{{'INPUT.REACTIVATION_DAYS.LABEL' | translate}}</mat-label>
+              <input matInput type="number" placeholder="{{'INPUT.REACTIVATION_DAYS.PLACEHOLDER' | translate}}"
+                formControlName="reactivation_days" required />
+              <mat-icon matSuffix *ngIf="formGroup.controls.reactivation_days.valid">
+                <i class="material-icons">check</i>
+              </mat-icon>
+              <mat-error *ngIf="formGroup.controls.reactivation_days.invalid">
+                {{getErrorMessage('reactivation_days')}}
+              </mat-error>
+            </mat-form-field>
+            <!-- ESTIMATED SAVINGS-->
+            <mat-form-field fxFlex="45%" fxFlexFill class="asterisk mat-form-field" [appearance]="this.constantList.FORM_FIELD_APPREANCE">
+              <mat-label>{{'INPUT.ESTIMATED_SAVINGS.LABEL' | translate}}</mat-label>
+              <input matInput type="number" placeholder="{{'INPUT.ESTIMATED_SAVINGS.PLACEHOLDER' | translate}}"
+                formControlName="estimated_savings" required />
+              <mat-icon matSuffix *ngIf="formGroup.controls.estimated_savings.valid">
+                <i class="material-icons">check</i>
+              </mat-icon>
+              <mat-error *ngIf="formGroup.controls.estimated_savings.invalid">
+                {{getErrorMessage('estimated_savings')}}
+              </mat-error>
+            </mat-form-field>
+          <!--NO OF OFFERS-->
+            <mat-form-field fxFlex="45%" fxFlexFill class="asterisk mat-form-field" [appearance]="this.constantList.FORM_FIELD_APPREANCE"
+                            *ngIf="this.formGroup.get('kind_id').value === this.constantList.OFFER_TYPE_LOYALTY_ID">
+              <mat-label>{{'INPUT.NO_OFFERS.LABEL' | translate}}</mat-label>
+              <input matInput type="number" placeholder="{{'INPUT.NO_OFFERS.PLACEHOLDER' | translate}}"
+                     formControlName="no_offers" required />
+              <mat-icon matSuffix *ngIf="formGroup.controls.no_offers.valid">
+                <i class="material-icons">check</i>
+              </mat-icon>
+              <mat-error *ngIf="formGroup.controls.no_offers.invalid">
+                {{getErrorMessage('no_offers')}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" fxLayoutAlign="space-between center" *ngIf="this.formGroup.get('kind_id').value !== this.constantList.OFFER_TYPE_LOYALTY_ID">
+            <!-- Max. Allowed Offers-->
+            <mat-form-field fxFlex="45%" fxFlexFill class="asterisk mat-form-field" [appearance]="this.constantList.FORM_FIELD_APPREANCE">
+              <mat-label>{{'INPUT.MAX_ALLOWED_OFFERS.LABEL' | translate}}</mat-label>
+              <input matInput type="number" placeholder="{{'INPUT.MAX_ALLOWED_OFFERS.PLACEHOLDER' | translate}}" formControlName="max_allowed_offers" />
+              <mat-icon matSuffix  matTooltip="{{'INPUT.MAX_ALLOWED_OFFERS.HINT' | translate}}"  matTooltipPosition="above">
+                info
+              </mat-icon>
+              <mat-error *ngIf="formGroup.controls.max_allowed_offers.invalid">
+                {{getErrorMessage('max_allowed_offers')}}
+              </mat-error>
+            </mat-form-field>
+            
+              <!-- Max. Allowed Offers Per User-->
+              <mat-form-field fxFlex="45%" fxFlexFill  class="asterisk mat-form-field" [appearance]="this.constantList.FORM_FIELD_APPREANCE"
+                              >
+                  <mat-label>{{'INPUT.MAX_ALLOWED_OFFERS_PER_USER.LABEL' | translate}}</mat-label>
+                  <input matInput type="number" placeholder="{{'INPUT.MAX_ALLOWED_OFFERS_PER_USER.PLACEHOLDER' | translate}}" formControlName="max_allowed_offers_per_user" />
+                <mat-icon matSuffix  matTooltip="{{'INPUT.MAX_ALLOWED_OFFERS_PER_USER.HINT' | translate}}"  matTooltipPosition="above">
+                  info
+                </mat-icon>
+                <mat-error *ngIf="formGroup.controls.max_allowed_offers_per_user.invalid">
+                  {{getErrorMessage('max_allowed_offers_per_user')}}
+                </mat-error>
+                </mat-form-field>
+          </div>
+
+          <!-- days-->
+          <div fxLayout="row" fxLayoutAlign="space-between center"
+               *ngIf="this.formGroup.get('kind_id').value === this.constantList.OFFER_TYPE_SURPRISE_ID">
+            <mat-form-field fxFlex="45%" fxFlexFill class="asterisk mat-form-field">
+              <mat-select placeholder="{{'INPUT.DAYS.PLACEHOLDER' | translate}}"   formControlName="days"
+                          required multiple>
+                <mat-option *ngFor="let day of this.constantList.DEFAULT_DAYS" [value]="day"
+                            [disabled]="this.formGroup.value.days && !this.formGroup.value.days.includes(day) && this.formGroup.value.days.length > 5">
+                  {{day.viewValue}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="formGroup.controls.days.invalid">
+                {{getErrorMessage('days')}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+        </div>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+      <mat-card-actions>
+        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+          <button mat-raised-button color="primary" type="button" [attr.aria-label]="'BUTTONS.CANCEL' | translate"
+            (click)="this.location.back()">
+            {{'BUTTONS.CANCEL' | translate}}
+          </button>
+          <button mat-raised-button type="button" [attr.aria-label]="'BUTTONS.SAVE' | translate" (click)="onSubmit()"
+            class="submit-button" [disabled]="formGroup.invalid  || !formDisbled">
+            <span *ngIf="this.userService.roles.slug === this.constantList.ADMIN_ROLE || this.userService.roles.slug === this.constantList.SUPPER_ADMIN_ROLE" >{{'BUTTONS.APPROVE' | translate}} </span>
+            <span *ngIf="this.userService.roles.slug !== this.constantList.ADMIN_ROLE && this.userService.roles.slug !== this.constantList.SUPPER_ADMIN_ROLE" >{{'BUTTONS.SAVE' | translate}} </span>
+          </button>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="space-between stretch" fxLayoutGap="10">
+        <div fxFlexAlign="center">
+          <p *ngIf="!formDisbled" class="txt-color"> This offer is pending and yet to be approved by admin</p>
+        </div>
+        </div>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+</div>

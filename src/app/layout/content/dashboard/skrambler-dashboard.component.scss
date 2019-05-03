@@ -1,0 +1,77 @@
+:host {
+  agm-map {
+    height: 300px;
+  }
+  .ngv-mrgn{
+    margin-top: -12px ;
+  }
+.mgn-top{
+  margin-top:15px;
+}
+  .mgn-right{
+    margin-right:10px;
+  }
+  .mgn-bottom{
+    margin-bottom: 0px;
+  }
+
+}
+
+.cursor{
+  cursor: pointer;
+}
+
+.card-branch-content{
+  height: 193px;
+}
+
+.card-branch-divider{
+  top: 234px;
+}
+
+.card-branch{
+  height: 303px;
+}
+
+hr {
+  border: 1px solid;
+  width: 100%
+}
+
+.icon-add-branch{
+  color: rgb(16, 172, 16);
+}
+
+.icon-branch-count{
+  margin-right: 5px;
+  width: 80px;
+  height: 50px;
+}
+
+.full-height{
+  height:100%;
+}
+.inactive-branch {
+  opacity:0.5;
+  width: 24px;
+}
+
+.ngv-mrgn{
+  margin-top: -12px ;
+}
+
+.log-allign{
+  height: 190px;
+}
+
+.branch-font{
+  font-size: 30px;
+}
+
+.active-inactive{
+  font-size: 20px;
+}
+
+.active-inactive-img{
+  width: 24px;
+}

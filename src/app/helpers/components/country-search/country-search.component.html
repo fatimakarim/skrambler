@@ -1,0 +1,23 @@
+<mat-form-field fxFlex="100%" [formGroup]="formGroup" [ngClass]="{'asterisk': isRequiredField}">
+  <input [required]="isRequiredField"
+         matInput
+         [matAutocomplete]="auto"
+         placeholder="{{placeHolderText}}"
+         formControlName="search_box">
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event)">
+    <mat-option *ngFor="let option of results | async"
+                [value]="option">
+      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+        <img src="{{option.country_flag}}" style="width: 16px; height: 16px;"/>
+        <span>{{ option.country_name }}</span>
+        <span style="color: #A8A8A8;">+{{ option.country_phone_code }}</span>
+      </div>
+    </mat-option>
+  </mat-autocomplete>
+  <mat-error *ngIf="this.formGroup.controls.search_box.invalid">
+    {{getErrorMessage()}}
+  </mat-error>
+  <mat-icon *ngIf="toolTipText" matSuffix matTooltip="{{toolTipText}}"
+            matTooltipPosition="above">info
+  </mat-icon>
+</mat-form-field>
